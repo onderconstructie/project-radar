@@ -129,8 +129,19 @@
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 400px;
-            gap: 2rem;
-            align-items: start;
+            grid-template-rows: 1fr auto;
+            gap: 2rem 2rem;
+            align-items: stretch;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .left-column .card {
+            flex: 1;
         }
 
         @media (max-width: 900px) {
@@ -432,33 +443,31 @@
             border-top: 1px solid var(--slate-100);
         }
 
-        /* Actions card */
-        .actions-card {
-            grid-column: 1 / -1;
+        /* Actions cards */
+        .action-card {
             background: var(--white);
             border-radius: var(--radius-lg);
             border: 1.5px solid var(--slate-200);
             padding: 1.25rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
         }
 
-        .actions-left {
+        .action-card-title {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--slate-400);
+            margin-bottom: 0.875rem;
+            text-align: center;
+        }
+
+        .action-buttons {
             display: flex;
             gap: 0.75rem;
         }
 
-        .actions-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .actions-hint {
-            font-size: 0.8125rem;
-            color: var(--slate-400);
+        .action-buttons .btn {
+            flex: 1;
         }
 
         .instructions {
@@ -476,6 +485,15 @@
             font-size: 0.8125rem;
         }
 
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .left-column {
+                display: contents;
+            }
+        }
+
         @media (max-width: 640px) {
             .container { padding: 1.25rem; }
             .title { font-size: 1.25rem; }
@@ -484,13 +502,8 @@
                 font-size: 0.6875rem;
                 padding: 0.375rem 0.25rem;
             }
-            .actions-card {
+            .action-buttons {
                 flex-direction: column;
-                gap: 1rem;
-            }
-            .actions-left, .actions-right {
-                width: 100%;
-                justify-content: center;
             }
         }
     </style>
@@ -516,21 +529,41 @@
         </div>
 
         <div class="main-grid">
-            <div class="card">
-                <h2 class="card-title">Statusoverzicht</h2>
-                <div class="radar-container">
-                    <canvas id="radarChart"></canvas>
-                </div>
-                
-                <div class="total-status status-empty" id="totalStatus">
-                    <div class="total-label">Totaalstatus</div>
-                    <div class="total-value" id="totalValue">—</div>
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title">Statusoverzicht</h2>
+                    <div class="radar-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    
+                    <div class="total-status status-empty" id="totalStatus">
+                        <div class="total-label">Totaalstatus</div>
+                        <div class="total-value" id="totalValue">—</div>
+                    </div>
+
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-dot red"></span><span>Zwaar probleem</span></div>
+                        <div class="legend-item"><span class="legend-dot orange"></span><span>Licht probleem</span></div>
+                        <div class="legend-item"><span class="legend-dot green"></span><span>On track</span></div>
+                    </div>
                 </div>
 
-                <div class="legend">
-                    <div class="legend-item"><span class="legend-dot red"></span><span>Zwaar probleem</span></div>
-                    <div class="legend-item"><span class="legend-dot orange"></span><span>Licht probleem</span></div>
-                    <div class="legend-item"><span class="legend-dot green"></span><span>On track</span></div>
+                <div class="action-card">
+                    <h3 class="action-card-title">Downloaden</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="downloadPng">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                            PNG
+                        </button>
+                        <button class="btn btn-secondary" id="downloadPdf">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                            PDF
+                        </button>
+                        <button class="btn btn-secondary" id="downloadCsv">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2M8 17h2M14 13h2M14 17h2"/></svg>
+                            CSV
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -538,28 +571,12 @@
                 <h2 class="card-title">Beoordeling per categorie</h2>
                 <div class="sliders-list" id="slidersList"></div>
                 <p class="instructions" style="margin-top: 1rem;">Klik op een status • Hover voor uitleg</p>
-            </div>
-
-            <div class="actions-card">
-                <div class="actions-left">
-                    <button class="btn btn-primary" id="downloadPng">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                        PNG
-                    </button>
-                    <button class="btn btn-secondary" id="downloadPdf">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-                        PDF
-                    </button>
-                    <button class="btn btn-secondary" id="downloadCsv">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2M8 17h2M14 13h2M14 17h2"/></svg>
-                        CSV
-                    </button>
-                </div>
-                <div class="actions-right">
-                    <span class="actions-hint">Opnieuw beginnen?</span>
-                    <button class="btn btn-outline" id="resetBtn">
+                
+                <div class="reset-section">
+                    <h3 class="action-card-title">Opnieuw beginnen?</h3>
+                    <button class="btn btn-outline" id="resetBtn" style="width: 100%;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                        Reset
+                        Reset alles
                     </button>
                 </div>
             </div>
