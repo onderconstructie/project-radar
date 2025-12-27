@@ -130,7 +130,7 @@
             display: grid;
             grid-template-columns: 1fr 400px;
             gap: 2rem;
-            align-items: start;
+            align-items: stretch;
         }
 
         @media (max-width: 900px) {
@@ -145,6 +145,9 @@
             border-radius: var(--radius-lg);
             border: 1.5px solid var(--slate-200);
             padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .card-title {
@@ -305,6 +308,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.875rem;
+            flex-grow: 1;
         }
 
         .slider-item {
