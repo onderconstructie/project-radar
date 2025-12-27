@@ -164,8 +164,9 @@
             position: relative;
             width: 100%;
             aspect-ratio: 1;
-            max-width: 450px;
+            max-width: 380px;
             margin: 0 auto;
+            flex-shrink: 0;
         }
 
         #radarChart {
@@ -176,9 +177,9 @@
         /* Total status */
         .total-status {
             text-align: center;
-            padding: 1.25rem;
+            padding: 1rem;
             border-radius: var(--radius-md);
-            margin-top: 1.5rem;
+            margin-top: 1.25rem;
             transition: all 0.3s ease;
         }
 
@@ -225,10 +226,14 @@
         .legend {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
+            gap: 1.25rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
             border-top: 1px solid var(--slate-100);
+        }
+
+        .radar-spacer {
+            flex-grow: 1;
         }
 
         .legend-item {
@@ -253,7 +258,9 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.75rem;
-            margin-top: 1.5rem;
+            margin-top: auto;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--slate-100);
         }
 
         .btn {
@@ -503,6 +510,8 @@
                     <div class="legend-item"><span class="legend-dot orange"></span><span>Licht probleem</span></div>
                     <div class="legend-item"><span class="legend-dot green"></span><span>On track</span></div>
                 </div>
+
+                <div class="radar-spacer"></div>
 
                 <div class="buttons">
                     <button class="btn btn-primary" id="downloadPng">
