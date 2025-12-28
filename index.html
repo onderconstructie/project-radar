@@ -481,7 +481,7 @@
         .footer {
             text-align: center;
             padding: 2rem;
-            color: var(--slate-400);
+            color: var(--accent);
             font-size: 0.8125rem;
         }
 
@@ -491,6 +491,15 @@
             }
             .left-column {
                 display: contents;
+            }
+            .left-column .card {
+                order: 1;
+            }
+            .left-column .action-card {
+                order: 3;
+            }
+            .main-grid > .card {
+                order: 2;
             }
         }
 
@@ -592,6 +601,9 @@
     <script>
         // Categorieën met weging (weight)
         // Hogere weging = meer impact op totaalscore
+        // Risico's en Issues wegen het zwaarst (blokkades/bedreigingen)
+        // Scope, Planning, Budget en Communicatie zijn kernfactoren
+        // Resources, Afhankelijkheden, Stakeholders zijn ondersteunend
         const categories = [
             { id: 'scope', label: 'Scope', weight: 1.2, explanations: {
                 0: 'Scope: Nog niet beoordeeld',
@@ -605,25 +617,25 @@
                 2: 'Planning: Lichte vertraging of druk op deadlines. Extra aandacht nodig.',
                 3: 'Planning: Op schema. Mijlpalen worden gehaald volgens plan.'
             }},
-            { id: 'budget', label: 'Budget', weight: 1.1, explanations: {
+            { id: 'budget', label: 'Budget', weight: 1.2, explanations: {
                 0: 'Budget: Nog niet beoordeeld',
                 1: 'Budget: Significante overschrijding (>10%) of onvoldoende middelen. Escalatie nodig.',
                 2: 'Budget: Lichte druk of afwijking. Bijsturing mogelijk maar moet bewaakt worden.',
                 3: 'Budget: Binnen budget. Kosten onder controle en voorspelbaar.'
             }},
-            { id: 'quality', label: 'Kwaliteit', weight: 1.0, explanations: {
-                0: 'Kwaliteit: Nog niet beoordeeld',
-                1: 'Kwaliteit: Ernstige problemen. Veel defects of afkeuringen. Herwerk nodig.',
-                2: 'Kwaliteit: Enkele issues. Acceptabel maar verbetering gewenst.',
-                3: 'Kwaliteit: Voldoet aan alle eisen. Testen en acceptaties verlopen goed.'
+            { id: 'communication', label: 'Communicatie', weight: 1.2, explanations: {
+                0: 'Communicatie: Nog niet beoordeeld',
+                1: 'Communicatie: Ernstige miscommunicatie. Stakeholders niet geïnformeerd of verkeerd begrepen.',
+                2: 'Communicatie: Enkele hiaten of vertragingen in informatiedeling. Verbetering nodig.',
+                3: 'Communicatie: Helder en tijdig. Alle betrokkenen goed geïnformeerd.'
             }},
-            { id: 'risks', label: "Risico's", weight: 1.3, explanations: {
+            { id: 'risks', label: "Risico's", weight: 1.4, explanations: {
                 0: "Risico's: Nog niet beoordeeld",
                 1: "Risico's: Hoge risico's met grote kans en impact. Onvoldoende mitigatie.",
                 2: "Risico's: Bekende risico's met mitigatie in uitvoering. Verhoogde alertheid nodig.",
                 3: "Risico's: Geïdentificeerd en beheerst. Geen directe bedreigingen."
             }},
-            { id: 'issues', label: 'Issues', weight: 1.2, explanations: {
+            { id: 'issues', label: 'Issues', weight: 1.4, explanations: {
                 0: 'Issues: Nog niet beoordeeld',
                 1: 'Issues: Kritieke blokkades die voortgang belemmeren. Escalatie vereist.',
                 2: 'Issues: Open issues die aandacht vragen. Impact beperkt maar moet opgelost.',
@@ -635,13 +647,13 @@
                 2: 'Resources: Krapte in bezetting of skills. Tijdelijke oplossingen nodig.',
                 3: 'Resources: Team compleet en capabel. Voldoende capaciteit beschikbaar.'
             }},
-            { id: 'dependencies', label: 'Afhankelijkheden', weight: 1.1, explanations: {
+            { id: 'dependencies', label: 'Afhankelijkheden', weight: 1.0, explanations: {
                 0: 'Afhankelijkheden: Nog niet beoordeeld',
                 1: 'Afhankelijkheden: Kritieke afhankelijkheden niet geleverd. Project geblokkeerd.',
                 2: 'Afhankelijkheden: Onder druk. Nauw contact met leveranciers nodig.',
                 3: 'Afhankelijkheden: Allemaal in control. Leveringen op schema.'
             }},
-            { id: 'stakeholders', label: 'Stakeholders', weight: 0.9, explanations: {
+            { id: 'stakeholders', label: 'Stakeholders', weight: 1.0, explanations: {
                 0: 'Stakeholders: Nog niet beoordeeld',
                 1: 'Stakeholders: Weerstand of gebrek aan betrokkenheid. Besluitvorming stokt.',
                 2: 'Stakeholders: Aandacht nodig voor draagvlak of communicatie. Enkele zorgen.',
