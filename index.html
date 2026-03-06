@@ -446,6 +446,50 @@
             color: var(--green-600);
         }
 
+        /* Toelichting textarea */
+        .toelichting-wrap {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;
+            margin-top: 0;
+        }
+
+        .toelichting-wrap.visible {
+            max-height: 120px;
+            opacity: 1;
+            margin-top: 0.5rem;
+        }
+
+        .toelichting-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8125rem;
+            font-family: inherit;
+            color: var(--slate-700);
+            background: var(--white);
+            border: 1.5px solid var(--slate-200);
+            border-radius: var(--radius-sm);
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .toelichting-input.score-1-focus:focus {
+            border-color: var(--red-500);
+            box-shadow: 0 0 0 3px var(--red-100);
+        }
+
+        .toelichting-input.score-2-focus:focus {
+            border-color: var(--orange-500);
+            box-shadow: 0 0 0 3px var(--orange-100);
+        }
+
+        .toelichting-input::placeholder {
+            color: var(--slate-400);
+        }
+
         /* Tooltip */
         .tooltip {
             position: fixed;
@@ -849,6 +893,14 @@
                             <label for="score-${cat.id}-3" class="score-3">On track</label>
                         </div>
                     </div>
+                    <div class="toelichting-wrap" id="toelichting-wrap-${cat.id}">
+                        <textarea
+                            class="toelichting-input"
+                            id="toelichting-${cat.id}"
+                            rows="2"
+                            placeholder="Korte toelichting…"
+                        ></textarea>
+                    </div>
                 `;
                 container.appendChild(item);
 
@@ -857,6 +909,16 @@
                         scores[cat.id] = parseInt(e.target.value);
                         updateBadge(cat.id, scores[cat.id]);
                         updateChart();
+
+                        const wrap = document.getElementById(`toelichting-wrap-${cat.id}`);
+                        const textarea = document.getElementById(`toelichting-${cat.id}`);
+                        if (scores[cat.id] === 1 || scores[cat.id] === 2) {
+                            wrap.classList.add('visible');
+                            textarea.className = `toelichting-input score-${scores[cat.id]}-focus`;
+                            textarea.focus();
+                        } else {
+                            wrap.classList.remove('visible');
+                        }
                     });
                 });
 
@@ -910,6 +972,8 @@
                 scores[cat.id] = 0;
                 [1,2,3].forEach(v => document.getElementById(`score-${cat.id}-${v}`).checked = false);
                 updateBadge(cat.id, 0);
+                document.getElementById(`toelichting-${cat.id}`).value = '';
+                document.getElementById(`toelichting-wrap-${cat.id}`).classList.remove('visible');
             });
             document.getElementById('projectName').value = '';
             updateChart();
@@ -963,10 +1027,19 @@
             categories.forEach(cat => {
                 const s = scores[cat.id];
                 const col = s === 0 ? [148,163,184] : s === 1 ? [239,68,68] : s === 2 ? [249,115,22] : [34,197,94];
+                const toelichting = document.getElementById(`toelichting-${cat.id}`).value.trim();
                 pdf.setTextColor(51, 65, 85);
                 pdf.text(cat.label, 20, y);
                 pdf.setTextColor(...col);
                 pdf.text(getValueLabel(s), 80, y);
+                if (toelichting) {
+                    pdf.setTextColor(100, 116, 139);
+                    pdf.setFontSize(8.5);
+                    const lines = pdf.splitTextToSize(toelichting, 100);
+                    pdf.text(lines, 110, y);
+                    pdf.setFontSize(10);
+                    y += (lines.length - 1) * 4;
+                }
                 y += 7;
             });
             
@@ -981,10 +1054,11 @@
             const weightedAvg = calculateWeightedAverage();
             const date = new Date().toLocaleDateString('nl-NL');
             
-            let csv = 'Project,Datum,Categorie,Status\n';
+            let csv = 'Project,Datum,Categorie,Status,Toelichting\n';
             categories.forEach(cat => {
                 const status = getValueLabel(scores[cat.id]);
-                csv += `"${name}","${date}","${cat.label}","${status}"\n`;
+                const toelichting = document.getElementById(`toelichting-${cat.id}`).value.trim();
+                csv += `"${name}","${date}","${cat.label}","${status}","${toelichting}"\n`;
             });
             csv += `"${name}","${date}","TOTAAL","${getTotalStatusLabel(weightedAvg)}"\n`;
             
