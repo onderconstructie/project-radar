@@ -21,6 +21,7 @@
             
             --red-50: #fef2f2;
             --red-100: #fee2e2;
+            --red-300: #fca5a5;
             --red-500: #ef4444;
             --red-600: #dc2626;
             
@@ -42,11 +43,7 @@
             --radius-lg: 16px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -80,31 +77,13 @@
             transition: color 0.2s;
         }
 
-        .back-link:hover {
-            color: var(--accent);
-        }
+        .back-link:hover { color: var(--accent); }
+        .back-link svg { width: 16px; height: 16px; }
 
-        .back-link svg {
-            width: 16px;
-            height: 16px;
-        }
+        .header-content { display: flex; align-items: center; gap: 1rem; }
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo {
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-        }
-
-        .logo svg {
-            width: 100%;
-            height: 100%;
-        }
+        .logo { width: 44px; height: 44px; flex-shrink: 0; }
+        .logo svg { width: 100%; height: 100%; }
 
         .header-text h1 {
             font-size: 1.25rem;
@@ -113,10 +92,7 @@
             letter-spacing: -0.02em;
         }
 
-        .header-text p {
-            font-size: 0.8125rem;
-            color: var(--slate-500);
-        }
+        .header-text p { font-size: 0.8125rem; color: var(--slate-500); }
 
         /* Main container */
         .container {
@@ -147,10 +123,7 @@
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .project-name-input::placeholder {
-            color: var(--slate-400);
-            font-weight: 400;
-        }
+        .project-name-input::placeholder { color: var(--slate-400); font-weight: 400; }
 
         .project-name-input:focus {
             border-color: var(--accent);
@@ -167,9 +140,7 @@
         }
 
         @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
+            .main-grid { grid-template-columns: 1fr; }
         }
 
         /* Card */
@@ -200,10 +171,7 @@
             margin: 0 auto;
         }
 
-        #radarChart {
-            width: 100%;
-            height: 100%;
-        }
+        #radarChart { width: 100%; height: 100%; }
 
         /* Total status */
         .total-status {
@@ -214,22 +182,10 @@
             transition: all 0.3s ease;
         }
 
-        .total-status.status-green {
-            background: var(--green-50);
-            border: 1.5px solid var(--green-500);
-        }
-        .total-status.status-orange {
-            background: var(--orange-50);
-            border: 1.5px solid var(--orange-500);
-        }
-        .total-status.status-red {
-            background: var(--red-50);
-            border: 1.5px solid var(--red-500);
-        }
-        .total-status.status-empty {
-            background: var(--slate-50);
-            border: 1.5px solid var(--slate-200);
-        }
+        .total-status.status-green { background: var(--green-50); border: 1.5px solid var(--green-500); }
+        .total-status.status-orange { background: var(--orange-50); border: 1.5px solid var(--orange-500); }
+        .total-status.status-red { background: var(--red-50); border: 1.5px solid var(--red-500); }
+        .total-status.status-empty { background: var(--slate-50); border: 1.5px solid var(--slate-200); }
 
         .total-label {
             font-size: 0.75rem;
@@ -238,16 +194,13 @@
             letter-spacing: 0.08em;
             margin-bottom: 0.5rem;
         }
+
         .status-green .total-label { color: var(--green-600); }
         .status-orange .total-label { color: var(--orange-600); }
         .status-red .total-label { color: var(--red-600); }
         .status-empty .total-label { color: var(--slate-400); }
 
-        .total-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
+        .total-value { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
         .status-green .total-value { color: var(--green-600); }
         .status-orange .total-value { color: var(--orange-600); }
         .status-red .total-value { color: var(--red-600); }
@@ -263,19 +216,9 @@
             border-top: 1px solid var(--slate-100);
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            font-size: 0.75rem;
-            color: var(--slate-500);
-        }
+        .legend-item { display: flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; color: var(--slate-500); }
 
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
         .legend-dot.red { background: var(--red-500); }
         .legend-dot.orange { background: var(--orange-500); }
         .legend-dot.green { background: var(--green-500); }
@@ -303,6 +246,45 @@
             justify-content: center;
         }
 
+        /* Session section */
+        .session-section {
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--slate-100);
+        }
+
+        .session-buttons {
+            display: flex;
+            gap: 0.625rem;
+            justify-content: center;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: var(--slate-800);
+            color: var(--white);
+            font-size: 0.8125rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 200;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.toast-success { background: var(--accent); }
+        .toast.toast-error { background: var(--red-600); }
+
         /* Buttons */
         .btn {
             padding: 0.625rem 1rem;
@@ -319,53 +301,32 @@
             transition: all 0.2s;
         }
 
-        .btn svg {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-        }
+        .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--white);
-        }
-        .btn-primary:hover {
-            background: #0d9668;
-        }
+        .btn-primary { background: var(--accent); color: var(--white); }
+        .btn-primary:hover { background: #0d9668; }
 
-        .btn-secondary {
-            background: var(--slate-100);
-            color: var(--slate-600);
+        .btn-secondary { background: var(--slate-100); color: var(--slate-600); }
+        .btn-secondary:hover { background: var(--slate-200); }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--slate-500);
+            border: 1.5px solid var(--slate-200);
         }
-        .btn-secondary:hover {
-            background: var(--slate-200);
-        }
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+        /* Hidden file input */
+        #jsonFileInput { display: none; }
 
         /* Score items */
-        .sliders-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.875rem;
-            flex-grow: 1;
-        }
+        .sliders-list { display: flex; flex-direction: column; gap: 0.875rem; flex-grow: 1; }
 
-        .slider-item {
-            position: relative;
-        }
+        .slider-item { position: relative; }
 
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
+        .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
 
-        .slider-label {
-            font-size: 0.8125rem;
-            font-weight: 500;
-            color: var(--slate-700);
-            cursor: help;
-        }
+        .slider-label { font-size: 0.8125rem; font-weight: 500; color: var(--slate-700); cursor: help; }
 
         .slider-value-badge {
             font-size: 0.6875rem;
@@ -375,33 +336,15 @@
             min-width: 90px;
             text-align: center;
         }
-        .slider-value-badge.val-0 {
-            background: var(--slate-100);
-            color: var(--slate-400);
-        }
-        .slider-value-badge.val-1 {
-            background: var(--red-100);
-            color: var(--red-600);
-        }
-        .slider-value-badge.val-2 {
-            background: var(--orange-100);
-            color: var(--orange-600);
-        }
-        .slider-value-badge.val-3 {
-            background: var(--green-100);
-            color: var(--green-600);
-        }
+        .slider-value-badge.val-0 { background: var(--slate-100); color: var(--slate-400); }
+        .slider-value-badge.val-1 { background: var(--red-100); color: var(--red-600); }
+        .slider-value-badge.val-2 { background: var(--orange-100); color: var(--orange-600); }
+        .slider-value-badge.val-3 { background: var(--green-100); color: var(--green-600); }
 
         /* Score options */
-        .score-options {
-            display: flex;
-            gap: 0.5rem;
-        }
+        .score-options { display: flex; gap: 0.5rem; }
 
-        .score-option {
-            flex: 1;
-            position: relative;
-        }
+        .score-option { flex: 1; position: relative; }
 
         .score-option input {
             position: absolute;
@@ -426,9 +369,7 @@
             transition: all 0.15s;
         }
 
-        .score-option input:hover + label {
-            border-color: var(--slate-300);
-        }
+        .score-option input:hover + label { border-color: var(--slate-300); }
 
         .score-option input:checked + label.score-1 {
             background: var(--red-50);
@@ -455,11 +396,7 @@
             margin-top: 0;
         }
 
-        .toelichting-wrap.visible {
-            max-height: 120px;
-            opacity: 1;
-            margin-top: 0.5rem;
-        }
+        .toelichting-wrap.visible { max-height: 120px; opacity: 1; margin-top: 0.5rem; }
 
         .toelichting-input {
             width: 100%;
@@ -486,9 +423,7 @@
             box-shadow: 0 0 0 3px var(--orange-100);
         }
 
-        .toelichting-input::placeholder {
-            color: var(--slate-400);
-        }
+        .toelichting-input::placeholder { color: var(--slate-400); }
 
         /* Tooltip */
         .tooltip {
@@ -507,17 +442,9 @@
             transition: opacity 0.15s, transform 0.15s;
         }
 
-        .tooltip.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .tooltip.show { opacity: 1; transform: translateY(0); }
 
-        .instructions {
-            font-size: 0.8125rem;
-            color: var(--slate-400);
-            text-align: center;
-            margin-top: 1rem;
-        }
+        .instructions { font-size: 0.8125rem; color: var(--slate-400); text-align: center; margin-top: 1rem; }
 
         /* Reset card - full width */
         .reset-card {
@@ -557,53 +484,24 @@
             transition: all 0.2s;
         }
 
-        .btn-reset:hover {
-            border-color: var(--red-300);
-            color: var(--red-500);
-            background: var(--red-50);
-        }
-
-        .btn-reset svg {
-            width: 16px;
-            height: 16px;
-        }
+        .btn-reset:hover { border-color: var(--red-300); color: var(--red-500); background: var(--red-50); }
+        .btn-reset svg { width: 16px; height: 16px; }
 
         /* Footer */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--accent);
-            font-size: 0.8125rem;
-        }
+        .footer { text-align: center; padding: 2rem; color: var(--accent); font-size: 0.8125rem; }
 
         @media (max-width: 900px) {
-            .back-link {
-                position: static;
-                margin-bottom: 0.75rem;
-            }
-            
-            .header {
-                flex-direction: column;
-                padding: 1rem 1.5rem;
-            }
+            .back-link { position: static; margin-bottom: 0.75rem; }
+            .header { flex-direction: column; padding: 1rem 1.5rem; }
         }
 
         @media (max-width: 640px) {
             .container { padding: 1rem 1.25rem; }
             .legend { flex-wrap: wrap; gap: 0.75rem; }
-            .score-option label {
-                font-size: 0.6875rem;
-                padding: 0.375rem 0.25rem;
-            }
-            .download-buttons {
-                flex-direction: column;
-            }
-            .download-buttons .btn {
-                width: 100%;
-            }
-            .btn-reset {
-                max-width: 100%;
-            }
+            .score-option label { font-size: 0.6875rem; padding: 0.375rem 0.25rem; }
+            .download-buttons, .session-buttons { flex-direction: column; }
+            .download-buttons .btn, .session-buttons .btn { width: 100%; }
+            .btn-reset { max-width: 100%; }
         }
     </style>
 </head>
@@ -656,24 +554,34 @@
                 </div>
 
                 <div class="download-section">
-                    <div class="download-label">Downloaden</div>
+                    <div class="download-label">Exporteren</div>
                     <div class="download-buttons">
-                        <button class="btn btn-primary" id="downloadPng">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <polyline points="21 15 16 10 5 21"/>
-                            </svg>
-                            PNG
-                        </button>
-                        <button class="btn btn-secondary" id="downloadPdf">
+                        <button class="btn btn-primary" id="downloadPdf">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-                            PDF
+                            PDF opslaan als…
+                        </button>
+                        <button class="btn btn-secondary" id="downloadPng">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            PNG
                         </button>
                         <button class="btn btn-secondary" id="downloadCsv">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2M8 17h2M14 13h2M14 17h2"/></svg>
                             CSV
                         </button>
+                    </div>
+
+                    <div class="session-section">
+                        <div class="download-label">Sessie</div>
+                        <div class="session-buttons">
+                            <button class="btn btn-ghost" id="saveJson">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                Sessie opslaan
+                            </button>
+                            <button class="btn btn-ghost" id="loadJson">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                Sessie laden
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -691,12 +599,15 @@
                     Reset alles
                 </button>
             </div>
-
         </div>
     </div>
 
     <footer class="footer">Focus op wat je kunt sturen; laat de rest zijn werk doen.</footer>
     <div class="tooltip" id="tooltip"></div>
+    <div class="toast" id="toast"></div>
+
+    <!-- Hidden file input for JSON loading -->
+    <input type="file" id="jsonFileInput" accept=".json">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -764,6 +675,8 @@
 
         let radarChart;
 
+        // ── Helpers ───────────────────────────────────────────────────────────
+
         function getValueLabel(v) {
             if (v === 0) return '—';
             if (v === 1) return 'Zwaar probleem';
@@ -772,8 +685,7 @@
         }
 
         function calculateWeightedAverage() {
-            let totalWeight = 0;
-            let weightedSum = 0;
+            let totalWeight = 0, weightedSum = 0;
             categories.forEach(c => {
                 if (scores[c.id] > 0) {
                     weightedSum += scores[c.id] * c.weight;
@@ -800,11 +712,32 @@
         }
 
         function getChartColors(avg) {
-            if (avg === 0) return { bg: 'rgba(148, 163, 184, 0.15)', border: '#94a3b8' };
-            if (avg < 2.0) return { bg: 'rgba(239, 68, 68, 0.15)', border: '#ef4444' };
-            if (avg < 2.7) return { bg: 'rgba(249, 115, 22, 0.15)', border: '#f97316' };
-            return { bg: 'rgba(34, 197, 94, 0.15)', border: '#22c55e' };
+            if (avg === 0) return { bg: 'rgba(148,163,184,0.15)', border: '#94a3b8' };
+            if (avg < 2.0) return { bg: 'rgba(239,68,68,0.15)', border: '#ef4444' };
+            if (avg < 2.7) return { bg: 'rgba(249,115,22,0.15)', border: '#f97316' };
+            return { bg: 'rgba(34,197,94,0.15)', border: '#22c55e' };
         }
+
+        // Filename: projectnaam_2026-03-15
+        function buildFilename(ext) {
+            const name = document.getElementById('projectName').value.trim() || 'project-radar';
+            const date = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+            const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+            return `${slug}_${date}.${ext}`;
+        }
+
+        // ── Toast ─────────────────────────────────────────────────────────────
+
+        let toastTimer;
+        function showToast(msg, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = `toast show${type ? ' toast-' + type : ''}`;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        // ── Chart ─────────────────────────────────────────────────────────────
 
         function initChart() {
             const ctx = document.getElementById('radarChart').getContext('2d');
@@ -814,7 +747,7 @@
                     labels: categories.map(c => c.label),
                     datasets: [{
                         data: categories.map(() => 0),
-                        backgroundColor: 'rgba(148, 163, 184, 0.15)',
+                        backgroundColor: 'rgba(148,163,184,0.15)',
                         borderColor: '#94a3b8',
                         borderWidth: 2,
                         pointBackgroundColor: '#94a3b8',
@@ -836,8 +769,7 @@
                     },
                     scales: {
                         r: {
-                            min: 0,
-                            max: 3,
+                            min: 0, max: 3,
                             ticks: { display: false },
                             grid: { color: '#e2e8f0' },
                             angleLines: { color: '#e2e8f0' },
@@ -869,6 +801,8 @@
             document.getElementById('totalValue').textContent = getTotalStatusLabel(weightedAvg);
         }
 
+        // ── Score inputs ──────────────────────────────────────────────────────
+
         function createScoreInputs() {
             const container = document.getElementById('slidersList');
             categories.forEach(cat => {
@@ -894,17 +828,12 @@
                         </div>
                     </div>
                     <div class="toelichting-wrap" id="toelichting-wrap-${cat.id}">
-                        <textarea
-                            class="toelichting-input"
-                            id="toelichting-${cat.id}"
-                            rows="2"
-                            placeholder="Korte toelichting…"
-                        ></textarea>
+                        <textarea class="toelichting-input" id="toelichting-${cat.id}" rows="2" placeholder="Korte toelichting…"></textarea>
                     </div>
                 `;
                 container.appendChild(item);
 
-                [1,2,3].forEach(v => {
+                [1, 2, 3].forEach(v => {
                     document.getElementById(`score-${cat.id}-${v}`).addEventListener('change', e => {
                         scores[cat.id] = parseInt(e.target.value);
                         updateBadge(cat.id, scores[cat.id]);
@@ -925,13 +854,11 @@
                 const label = item.querySelector('.slider-label');
                 const badge = item.querySelector('.slider-value-badge');
                 const scoreLabels = item.querySelectorAll('.score-option label');
-                
+
                 label.addEventListener('mouseenter', e => showTooltip(e, cat));
                 label.addEventListener('mouseleave', hideTooltip);
-                
                 badge.addEventListener('mouseenter', e => showTooltip(e, cat));
                 badge.addEventListener('mouseleave', hideTooltip);
-                
                 scoreLabels.forEach((scoreLabel, idx) => {
                     scoreLabel.addEventListener('mouseenter', e => showScoreTooltip(e, cat, idx + 1));
                     scoreLabel.addEventListener('mouseleave', hideTooltip);
@@ -944,6 +871,8 @@
             b.className = `slider-value-badge val-${v}`;
             b.textContent = getValueLabel(v);
         }
+
+        // ── Tooltips ──────────────────────────────────────────────────────────
 
         function showTooltip(e, cat) {
             const t = document.getElementById('tooltip');
@@ -963,14 +892,14 @@
             t.classList.add('show');
         }
 
-        function hideTooltip() {
-            document.getElementById('tooltip').classList.remove('show');
-        }
+        function hideTooltip() { document.getElementById('tooltip').classList.remove('show'); }
+
+        // ── Reset ─────────────────────────────────────────────────────────────
 
         function reset() {
             categories.forEach(cat => {
                 scores[cat.id] = 0;
-                [1,2,3].forEach(v => document.getElementById(`score-${cat.id}-${v}`).checked = false);
+                [1, 2, 3].forEach(v => document.getElementById(`score-${cat.id}-${v}`).checked = false);
                 updateBadge(cat.id, 0);
                 document.getElementById(`toelichting-${cat.id}`).value = '';
                 document.getElementById(`toelichting-wrap-${cat.id}`).classList.remove('visible');
@@ -978,6 +907,8 @@
             document.getElementById('projectName').value = '';
             updateChart();
         }
+
+        // ── Exports ───────────────────────────────────────────────────────────
 
         function downloadPng() {
             const canvas = document.getElementById('radarChart');
@@ -999,18 +930,18 @@
             ctx.fillText(`${new Date().toLocaleDateString('nl-NL')} — ${getTotalStatusLabel(weightedAvg)}`, exp.width / 2, 60);
             ctx.drawImage(canvas, pad, pad + 40);
             const link = document.createElement('a');
-            link.download = `${name.toLowerCase().replace(/\s+/g, '-')}-radar.png`;
+            link.download = buildFilename('png');
             link.href = exp.toDataURL('image/png');
             link.click();
         }
 
-        function downloadPdf() {
+        function buildPdfBlob() {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             const name = document.getElementById('projectName').value || 'Project Radar';
             const canvas = document.getElementById('radarChart');
             const weightedAvg = calculateWeightedAverage();
-            
+
             pdf.setFontSize(22);
             pdf.setTextColor(30, 41, 59);
             pdf.text(name, 105, 25, { align: 'center' });
@@ -1018,7 +949,7 @@
             pdf.setTextColor(100, 116, 139);
             pdf.text(`Status per ${new Date().toLocaleDateString('nl-NL')}`, 105, 33, { align: 'center' });
             pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 35, 45, 140, 140);
-            
+
             pdf.setFontSize(13);
             pdf.setTextColor(30, 41, 59);
             pdf.text('Beoordeling per categorie', 20, 200);
@@ -1042,18 +973,54 @@
                 }
                 y += 7;
             });
-            
+
             pdf.setFontSize(12);
             pdf.setTextColor(30, 41, 59);
             pdf.text(`Totaalstatus: ${getTotalStatusLabel(weightedAvg)}`, 20, y + 10);
-            pdf.save(`${name.toLowerCase().replace(/\s+/g, '-')}-radar.pdf`);
+
+            return pdf.output('arraybuffer');
+        }
+
+        async function downloadPdf() {
+            const filename = buildFilename('pdf');
+
+            // Try File System Access API (Chrome/Edge — works with mapped SharePoint folders)
+            if (window.showSaveFilePicker) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: filename,
+                        types: [{ description: 'PDF bestand', accept: { 'application/pdf': ['.pdf'] } }]
+                    });
+                    const pdfBuffer = buildPdfBlob();
+                    const writable = await handle.createWritable();
+                    await writable.write(pdfBuffer);
+                    await writable.close();
+                    showToast('PDF opgeslagen ✓', 'success');
+                    return;
+                } catch (err) {
+                    // User cancelled the dialog — do nothing
+                    if (err.name === 'AbortError') return;
+                    // Unexpected error — fall through to regular download
+                }
+            }
+
+            // Fallback: regular download (Firefox, Safari, older browsers)
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            // Rebuild cleanly via jsPDF .save() for fallback path
+            const pdfBuffer = buildPdfBlob();
+            const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
         }
 
         function downloadCsv() {
             const name = document.getElementById('projectName').value || 'Project Radar';
             const weightedAvg = calculateWeightedAverage();
             const date = new Date().toLocaleDateString('nl-NL');
-            
+
             let csv = 'Project,Datum,Categorie,Status,Toelichting\n';
             categories.forEach(cat => {
                 const status = getValueLabel(scores[cat.id]);
@@ -1061,21 +1028,110 @@
                 csv += `"${name}","${date}","${cat.label}","${status}","${toelichting}"\n`;
             });
             csv += `"${name}","${date}","TOTAAL","${getTotalStatusLabel(weightedAvg)}"\n`;
-            
+
             const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `${name.toLowerCase().replace(/\s+/g, '-')}-radar.csv`;
+            link.download = buildFilename('csv');
             link.click();
         }
+
+        // ── JSON sessie ───────────────────────────────────────────────────────
+
+        function saveJson() {
+            const name = document.getElementById('projectName').value.trim();
+            const toelichtingen = {};
+            categories.forEach(cat => {
+                toelichtingen[cat.id] = document.getElementById(`toelichting-${cat.id}`).value;
+            });
+
+            const session = {
+                version: 1,
+                savedAt: new Date().toISOString(),
+                projectName: name,
+                scores: { ...scores },
+                toelichtingen
+            };
+
+            const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = buildFilename('json');
+            link.click();
+            showToast('Sessie opgeslagen ✓', 'success');
+        }
+
+        function loadJson() {
+            document.getElementById('jsonFileInput').click();
+        }
+
+        function applySession(session) {
+            if (!session.scores || !session.toelichtingen) {
+                showToast('Ongeldig sessiebestand', 'error');
+                return;
+            }
+
+            // Reset first
+            reset();
+
+            // Project name
+            document.getElementById('projectName').value = session.projectName || '';
+
+            // Scores & toelichtingen
+            categories.forEach(cat => {
+                const s = session.scores[cat.id] ?? 0;
+                if (s > 0) {
+                    scores[cat.id] = s;
+                    const radio = document.getElementById(`score-${cat.id}-${s}`);
+                    if (radio) radio.checked = true;
+                    updateBadge(cat.id, s);
+
+                    const toelichting = session.toelichtingen[cat.id] || '';
+                    if (toelichting) {
+                        document.getElementById(`toelichting-${cat.id}`).value = toelichting;
+                        const wrap = document.getElementById(`toelichting-wrap-${cat.id}`);
+                        const textarea = document.getElementById(`toelichting-${cat.id}`);
+                        if (s === 1 || s === 2) {
+                            wrap.classList.add('visible');
+                            textarea.className = `toelichting-input score-${s}-focus`;
+                        }
+                    }
+                }
+            });
+
+            updateChart();
+            showToast('Sessie geladen ✓', 'success');
+        }
+
+        // ── Init ──────────────────────────────────────────────────────────────
 
         document.addEventListener('DOMContentLoaded', () => {
             createScoreInputs();
             initChart();
+
             document.getElementById('resetBtn').addEventListener('click', reset);
             document.getElementById('downloadPng').addEventListener('click', downloadPng);
             document.getElementById('downloadPdf').addEventListener('click', downloadPdf);
             document.getElementById('downloadCsv').addEventListener('click', downloadCsv);
+            document.getElementById('saveJson').addEventListener('click', saveJson);
+            document.getElementById('loadJson').addEventListener('click', loadJson);
+
+            document.getElementById('jsonFileInput').addEventListener('change', e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = evt => {
+                    try {
+                        const session = JSON.parse(evt.target.result);
+                        applySession(session);
+                    } catch {
+                        showToast('Kon bestand niet lezen', 'error');
+                    }
+                };
+                reader.readAsText(file);
+                // Reset input so the same file can be reloaded if needed
+                e.target.value = '';
+            });
         });
     </script>
 </body>
