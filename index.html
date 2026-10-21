@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Radar — Projectstatus in één oogopslag</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>Project Radar – Onder Constructie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23f0fdf4' stroke='%2310b981' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2310b981' stroke-width='1' opacity='0.5'/%3E%3Ccircle cx='16' cy='16' r='4' fill='none' stroke='%2310b981' stroke-width='1' opacity='0.3'/%3E%3Cpath d='M16 4 L16 16 L24 8' fill='%2310b981' opacity='0.6'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%2310b981'/%3E%3C/svg%3E">
     <style>
         :root {
@@ -46,7 +50,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
             background: var(--slate-50);
             color: var(--slate-700);
             line-height: 1.5;
@@ -503,6 +507,25 @@
             .download-buttons .btn, .session-buttons .btn { width: 100%; }
             .btn-reset { max-width: 100%; }
         }
+    
+        /* Onder Constructie: gedeelde footer en quote (huisstijl) */
+        footer.oc-footer {
+            text-align: center;
+            padding: 2rem 1.5rem calc(env(safe-area-inset-bottom, 0px) + 2rem);
+            margin-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #10b981;
+        }
+
+        footer.oc-footer .oc-quote {
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: #10b981;
+            opacity: 1;
+            font-style: normal;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -602,14 +625,16 @@
         </div>
     </div>
 
-    <footer class="footer">Focus op wat je kunt sturen; laat de rest zijn werk doen.</footer>
+    <footer class="footer oc-footer">
+        <p class="quote oc-quote">Focus op wat je kunt sturen; laat de rest zijn werk doen.</p>
+    </footer>
     <div class="tooltip" id="tooltip"></div>
     <div class="toast" id="toast"></div>
 
     <!-- Hidden file input for JSON loading -->
     <input type="file" id="jsonFileInput" accept=".json">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
@@ -922,11 +947,11 @@
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, exp.width, exp.height);
             ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 24px -apple-system, sans-serif';
+            ctx.font = "bold 24px 'DM Sans', sans-serif";
             ctx.textAlign = 'center';
             ctx.fillText(name, exp.width / 2, 40);
             ctx.fillStyle = '#64748b';
-            ctx.font = '14px -apple-system, sans-serif';
+            ctx.font = "14px 'DM Sans', sans-serif";
             ctx.fillText(`${new Date().toLocaleDateString('nl-NL')} — ${getTotalStatusLabel(weightedAvg)}`, exp.width / 2, 60);
             ctx.drawImage(canvas, pad, pad + 40);
             const link = document.createElement('a');
