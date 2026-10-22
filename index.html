@@ -591,7 +591,7 @@
                         </button>
                         <button class="btn btn-secondary" id="downloadPng">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                            PNG
+                            Afbeelding
                         </button>
                         <button class="btn btn-secondary" id="downloadCsv">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2M8 17h2M14 13h2M14 17h2"/></svg>
@@ -641,9 +641,107 @@
     <input type="file" id="jsonFileInput" accept=".json">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
+/* ---------- Download als afbeelding of PDF (gedeeld door de Onder Constructie-tools, v2) ----------
+   Gebruik:
+     ocExport.png(bouwFn, 'bestandsnaam', { landscape:true })
+     ocExport.pdf(bouwFn, 'bestandsnaam', { landscape:true })
+   bouwFn() geeft { node, title, subtitle } terug: een DOM-knoop met inline styles, zonder knoppen of invoervelden.
+   Die komt buiten beeld op een witte pagina met kop (titel, ondertitel, datum) en voet.
+   Zet data-oc-keep op blokken die in een PDF niet over twee pagina's gesplitst mogen worden
+   (een beslissing, een kaartje, een rij); ze schuiven dan door naar de volgende pagina.
+   html2canvas en jsPDF worden pas geladen bij de eerste download, van dezelfde adressen als de
+   andere tools, zodat de app ze offline kan bewaren. */
+const ocExport = (() => {
+  const LIBS = {
+    h2c: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+    pdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+  };
+  const A4 = { w: 210, h: 297 }, MARGIN = 10;   // mm
+  const loaded = {};
+  function load(url) {
+    if (!loaded[url]) loaded[url] = new Promise((ok, fail) => {
+      const s = document.createElement('script');
+      s.src = url; s.onload = ok; s.onerror = () => { delete loaded[url]; fail(new Error('laden mislukt')); };
+      document.head.appendChild(s);
+    });
+    return loaded[url];
+  }
+  const today = () => new Date().toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
+  function page(content, { title, subtitle, width }) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = `position:fixed;left:-20000px;top:0;width:${width}px;background:#fff;padding:36px 40px 28px;
+      font-family:'DM Sans',system-ui,-apple-system,sans-serif;color:#1e293b;-webkit-font-smoothing:antialiased;box-sizing:border-box;`;
+    const head = document.createElement('div');
+    head.style.cssText = 'display:flex;align-items:flex-end;justify-content:space-between;gap:24px;border-bottom:2px solid #10b981;padding-bottom:12px;margin-bottom:20px;';
+    head.innerHTML = `<div><div style="font-size:22px;font-weight:700;letter-spacing:-0.02em;color:#1e293b"></div>
+      <div style="font-size:14px;color:#64748b;margin-top:2px"></div></div>
+      <div style="font-size:12px;color:#94a3b8;white-space:nowrap">${today()}</div>`;
+    head.children[0].children[0].textContent = title || '';
+    head.children[0].children[1].textContent = subtitle || '';
+    const foot = document.createElement('div');
+    foot.style.cssText = 'margin-top:22px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11px;color:#94a3b8;display:flex;justify-content:space-between;';
+    foot.innerHTML = '<span>Onder Constructie</span><span>onderconstructie.github.io</span>';
+    wrap.append(head, content, foot);
+    document.body.appendChild(wrap);
+    return wrap;
+  }
+  // Schuift blokken met data-oc-keep die over een paginagrens zouden vallen naar de volgende pagina.
+  function keepTogether(wrap, pageH) {
+    const top0 = () => wrap.getBoundingClientRect().top;
+    for (const el of wrap.querySelectorAll('[data-oc-keep]')) {
+      const r = el.getBoundingClientRect(), t = r.top - top0(), b = t + r.height;
+      if (r.height > pageH * 0.85) continue;            // te groot om heel te houden
+      const boundary = Math.ceil(t / pageH) * pageH;     // eerstvolgende grens na de bovenkant
+      if (t % pageH !== 0 && b > boundary && t < boundary) {
+        const gap = document.createElement('div');
+        gap.style.cssText = `height:${boundary - t + 6}px;`;
+        el.parentNode.insertBefore(gap, el);
+      }
+    }
+  }
+  async function canvasOf(build, opts) {
+    await load(LIBS.h2c);
+    const built = build();
+    const node = page(built.node, { title: built.title, subtitle: built.subtitle, width: opts.width });
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      if (opts.pageH) keepTogether(node, opts.pageH);
+      return await window.html2canvas(node, { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
+    } finally { node.remove(); }
+  }
+  function save(blob, name) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  const widthFor = opts => opts.width || (opts.landscape ? 1120 : 800);
+  async function png(build, name, opts = {}) {
+    const c = await canvasOf(build, { width: widthFor(opts) });
+    await new Promise(ok => c.toBlob(b => { save(b, name + '.png'); ok(); }, 'image/png'));
+  }
+  async function pdf(build, name, opts = {}) {
+    const landscape = !!opts.landscape, width = widthFor(opts);
+    const pw = landscape ? A4.h : A4.w, ph = landscape ? A4.w : A4.h, w = pw - 2 * MARGIN;
+    const pageCss = (ph - 2 * MARGIN) / w * width;       // paginahoogte in CSS-pixels van de exportknoop
+    const [c] = await Promise.all([canvasOf(build, { width, pageH: pageCss }), load(LIBS.pdf)]);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: landscape ? 'landscape' : 'portrait', unit: 'mm', format: 'a4' });
+    const scale = w / c.width, pageH = (ph - 2 * MARGIN) / scale;   // paginahoogte in canvaspixels
+    for (let y = 0, i = 0; y < c.height - 2; y += pageH, i++) {
+      const h = Math.min(pageH, c.height - y);
+      const part = document.createElement('canvas'); part.width = c.width; part.height = h;
+      part.getContext('2d').drawImage(c, 0, y, c.width, h, 0, 0, c.width, h);
+      if (i) doc.addPage();
+      doc.addImage(part.toDataURL('image/jpeg', 0.92), 'JPEG', MARGIN, MARGIN, w, h * scale);
+    }
+    save(doc.output('blob'), name + '.pdf');
+  }
+  return { png, pdf };
+})();
+
         const categories = [
             { id: 'scope', label: 'Scope', weight: 1.2, explanations: {
                 0: 'Scope: Nog niet beoordeeld',
@@ -941,110 +1039,133 @@
 
         // ── Exports ───────────────────────────────────────────────────────────
 
-        function downloadPng() {
-            const canvas = document.getElementById('radarChart');
-            const name = document.getElementById('projectName').value || 'Project Radar';
-            const weightedAvg = calculateWeightedAverage();
-            const exp = document.createElement('canvas');
-            const ctx = exp.getContext('2d');
-            const pad = 60;
-            exp.width = canvas.width + pad * 2;
-            exp.height = canvas.height + pad * 2 + 40;
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, exp.width, exp.height);
-            ctx.fillStyle = '#1e293b';
-            ctx.font = "bold 24px 'DM Sans', sans-serif";
-            ctx.textAlign = 'center';
-            ctx.fillText(name, exp.width / 2, 40);
-            ctx.fillStyle = '#64748b';
-            ctx.font = "14px 'DM Sans', sans-serif";
-            ctx.fillText(`${new Date().toLocaleDateString('nl-NL')} — ${getTotalStatusLabel(weightedAvg)}`, exp.width / 2, 60);
-            ctx.drawImage(canvas, pad, pad + 40);
-            const link = document.createElement('a');
-            link.download = buildFilename('png');
-            link.href = exp.toDataURL('image/png');
-            link.click();
+        // Exportweergave in de gedeelde Onder Constructie-layout (oc-export): radar, totaalstatus, scores per categorie.
+        const STATUS_COLOR = { 0: '#94a3b8', 1: '#ef4444', 2: '#f97316', 3: '#22c55e' };
+        const STATUS_BG = { 0: '#f1f5f9', 1: '#fef2f2', 2: '#fff7ed', 3: '#f0fdf4' };
+        const escHtml = v => String(v).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+        function exportName() {
+            const name = document.getElementById('projectName').value.trim() || 'project';
+            const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'project';
+            return `projectradar-${slug}-${new Date().toISOString().slice(0, 10)}`;
         }
 
-        function buildPdfBlob() {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const name = document.getElementById('projectName').value || 'Project Radar';
-            const canvas = document.getElementById('radarChart');
-            const weightedAvg = calculateWeightedAverage();
+        // Radar scherp (3x) opnieuw tekenen en de lege rand eromheen wegsnijden.
+        function radarImage() {
+            const chart = radarChart, canvas = document.getElementById('radarChart');
+            let src = canvas;
+            if (chart && chart.options) {
+                const prev = chart.options.devicePixelRatio;
+                chart.options.devicePixelRatio = 3; chart.resize(); chart.update('none');
+                src = document.createElement('canvas'); src.width = canvas.width; src.height = canvas.height;
+                src.getContext('2d').drawImage(canvas, 0, 0);
+                chart.options.devicePixelRatio = prev; chart.resize(); chart.update('none');
+            }
+            const ctx = src.getContext('2d'), { width: w, height: h } = src;
+            const px = ctx.getImageData(0, 0, w, h).data;
+            let x0 = w, y0 = h, x1 = 0, y1 = 0;
+            for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
+                if (px[(y * w + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+            }
+            if (x1 <= x0 || y1 <= y0) return src.toDataURL('image/png');
+            const pad = 12 * 3, cw = x1 - x0 + pad * 2, ch = y1 - y0 + pad * 2;
+            const out = document.createElement('canvas'); out.width = cw; out.height = ch;
+            out.getContext('2d').drawImage(src, x0 - pad, y0 - pad, cw, ch, 0, 0, cw, ch);
+            return { url: out.toDataURL('image/png'), ratio: cw / ch };
+        }
 
-            pdf.setFontSize(22);
-            pdf.setTextColor(30, 41, 59);
-            pdf.text(name, 105, 25, { align: 'center' });
-            pdf.setFontSize(11);
-            pdf.setTextColor(100, 116, 139);
-            pdf.text(`Status per ${new Date().toLocaleDateString('nl-NL')}`, 105, 33, { align: 'center' });
-            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 35, 45, 140, 140);
+        function buildExport() {
+            const name = document.getElementById('projectName').value.trim() || 'Project Radar';
+            const avg = calculateWeightedAverage();
+            const total = getTotalStatusLabel(avg);
+            const totalColor = avg === 0 ? '#94a3b8' : avg < 2.0 ? '#ef4444' : avg < 2.7 ? '#f97316' : '#22c55e';
+            const node = document.createElement('div');
 
-            pdf.setFontSize(13);
-            pdf.setTextColor(30, 41, 59);
-            pdf.text('Beoordeling per categorie', 20, 200);
-            let y = 210;
-            pdf.setFontSize(10);
-            categories.forEach(cat => {
-                const s = scores[cat.id];
-                const col = s === 0 ? [148,163,184] : s === 1 ? [239,68,68] : s === 2 ? [249,115,22] : [34,197,94];
-                const toelichting = document.getElementById(`toelichting-${cat.id}`).value.trim();
-                pdf.setTextColor(51, 65, 85);
-                pdf.text(cat.label, 20, y);
-                pdf.setTextColor(...col);
-                pdf.text(getValueLabel(s), 80, y);
-                if (toelichting) {
-                    pdf.setTextColor(100, 116, 139);
-                    pdf.setFontSize(8.5);
-                    const lines = pdf.splitTextToSize(toelichting, 100);
-                    pdf.text(lines, 110, y);
-                    pdf.setFontSize(10);
-                    y += (lines.length - 1) * 4;
-                }
-                y += 7;
-            });
+            const top = document.createElement('div');
+            top.style.cssText = 'display:flex;align-items:center;gap:32px;margin-bottom:24px;';
+            const r = radarImage();
+            const img = document.createElement('img');
+            img.src = typeof r === 'string' ? r : r.url;
+            const ratio = typeof r === 'string' ? 1 : r.ratio;
+            img.style.cssText = `width:440px;height:${Math.round(440 / ratio)}px;flex-shrink:0;`;
+            const side = document.createElement('div');
+            side.style.cssText = 'flex:1;';
+            const scored = categories.filter(c => scores[c.id] > 0).length;
+            side.innerHTML = `
+                <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8">Totaalstatus</div>
+                <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;color:${totalColor};margin:4px 0 6px">${escHtml(total)}</div>
+                <div style="font-size:13px;color:#64748b">gewogen gemiddelde ${avg ? avg.toFixed(2).replace('.', ',') : '—'} op 3 · ${scored} van ${categories.length} categorieën beoordeeld</div>
+                <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
+                    ${[[1, 'Zwaar probleem'], [2, 'Licht probleem'], [3, 'On track']].map(([v, l]) =>
+                        `<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:${STATUS_COLOR[v]}"></span>${l}</div>`).join('')}
+                </div>`;
+            top.append(img, side);
 
-            pdf.setFontSize(12);
-            pdf.setTextColor(30, 41, 59);
-            pdf.text(`Totaalstatus: ${getTotalStatusLabel(weightedAvg)}`, 20, y + 10);
+            const table = document.createElement('div');
+            table.innerHTML = `
+                <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:8px">Beoordeling per categorie</div>
+                ${categories.map(cat => {
+                    const v = scores[cat.id];
+                    const note = (document.getElementById(`toelichting-${cat.id}`) || {}).value || '';
+                    return `<div data-oc-keep style="display:grid;grid-template-columns:170px 150px 1fr;gap:16px;align-items:start;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px">
+                        <span style="font-weight:600;color:#1e293b">${escHtml(cat.label)}</span>
+                        <span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;color:${STATUS_COLOR[v]};background:${STATUS_BG[v]}">${escHtml(getValueLabel(v) === '—' ? 'niet beoordeeld' : getValueLabel(v))}</span></span>
+                        <span style="color:#64748b;font-size:13px;line-height:1.45">${escHtml(note.trim())}</span>
+                    </div>`;
+                }).join('')}`;
+            node.append(top, table);
+            return { node, title: 'Project Radar', subtitle: `${name} · totaalstatus ${total}` };
+        }
 
-            return pdf.output('arraybuffer');
+        async function downloadPng() {
+            showToast('Bezig…');
+            try { await ocExport.png(buildExport, exportName()); showToast('Afbeelding gedownload', 'success'); }
+            catch { showToast('Downloaden lukt nu niet: geen verbinding?', 'error'); }
+        }
+
+        // Maakt de PDF via oc-export, maar vangt het bestand op in plaats van het te downloaden,
+        // zodat "PDF opslaan als…" het rechtstreeks in een gekozen map kan schrijven (bv. SharePoint).
+        async function pdfBlob() {
+            let captured = null;
+            const origURL = URL.createObjectURL, origClick = HTMLAnchorElement.prototype.click;
+            URL.createObjectURL = b => { captured = b; return 'about:blank'; };
+            HTMLAnchorElement.prototype.click = function () {};
+            try { await ocExport.pdf(buildExport, exportName()); }
+            finally { URL.createObjectURL = origURL; HTMLAnchorElement.prototype.click = origClick; }
+            if (!captured) throw new Error('geen pdf');
+            return captured;
         }
 
         async function downloadPdf() {
-            const filename = buildFilename('pdf');
-
-            // Try File System Access API (Chrome/Edge — works with mapped SharePoint folders)
+            const filename = exportName() + '.pdf';
+            // Chrome/Edge: eerst de plaats kiezen (moet meteen na de klik), dan het bestand maken en wegschrijven.
             if (window.showSaveFilePicker) {
+                let handle;
                 try {
-                    const handle = await window.showSaveFilePicker({
+                    handle = await window.showSaveFilePicker({
                         suggestedName: filename,
                         types: [{ description: 'PDF bestand', accept: { 'application/pdf': ['.pdf'] } }]
                     });
-                    const pdfBuffer = buildPdfBlob();
-                    const writable = await handle.createWritable();
-                    await writable.write(pdfBuffer);
-                    await writable.close();
-                    showToast('PDF opgeslagen ✓', 'success');
-                    return;
                 } catch (err) {
-                    // User cancelled the dialog — do nothing
-                    if (err.name === 'AbortError') return;
-                    // Unexpected error — fall through to regular download
+                    if (err.name === 'AbortError') return;   // geannuleerd
+                }
+                if (handle) {
+                    showToast('Bezig…');
+                    try {
+                        const blob = await pdfBlob();
+                        const writable = await handle.createWritable();
+                        await writable.write(blob);
+                        await writable.close();
+                        showToast('PDF opgeslagen ✓', 'success');
+                    } catch { showToast('Downloaden lukt nu niet: geen verbinding?', 'error'); }
+                    return;
                 }
             }
-
-            // Fallback: regular download (Firefox, Safari, older browsers)
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            // Rebuild cleanly via jsPDF .save() for fallback path
-            const pdfBuffer = buildPdfBlob();
-            const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
+            // Andere browsers: gewone download
+            showToast('Bezig…');
+            try { await ocExport.pdf(buildExport, exportName()); showToast('PDF gedownload', 'success'); }
+            catch { showToast('Downloaden lukt nu niet: geen verbinding?', 'error'); }
         }
 
         function downloadCsv() {
