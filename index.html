@@ -550,36 +550,78 @@
         .ocw-cancel:hover { background: #e2e8f0; }
         .ocw-ok { background: #ef4444; color: #ffffff; }
         .ocw-ok:hover { background: #dc2626; }
+    
+        /* ===== Huisstijl oktober 2026: kop (patroon B), contrast, focus, tikdoelen ===== */
+        .oc-head { display:block; text-align:center; background:#fff; border-bottom:1px solid #e2e8f0; padding:1.5rem 1.25rem 1.75rem; position:relative; }
+        .oc-head .back-link { position:absolute; top:0.875rem; left:1rem; min-height:44px; display:inline-flex; align-items:center; gap:0.5rem; padding:0 0.5rem; margin:0; font-size:0.875rem; color:#64748b; text-decoration:none; border-radius:8px; transition:color 0.2s; }
+        .oc-head .back-link:hover { color:#047857; }
+        .oc-head .back-link svg { width:16px; height:16px; flex:none; }
+        .oc-head .logo { display:block; width:56px; height:56px; margin:0 auto; }
+        .oc-head .logo svg { display:block; width:56px; height:56px; }
+        .oc-head .title { font-size:1.625rem; font-weight:700; color:#1e293b; letter-spacing:-0.03em; line-height:1.2; margin:0.5rem 0 0.25rem; }
+        .oc-head .subtitle { font-size:0.9375rem; color:#64748b; max-width:520px; margin:0 auto; }
+        @media (max-width:640px) {
+            .oc-head { padding-top:0.5rem; }
+            .oc-head .back-link { position:static; margin:0 auto 0.375rem; }
+        }
+        footer.oc-footer, footer.oc-footer .oc-quote, .footer .quote { color:#047857; }
+        :focus-visible { outline:2px solid #047857 !important; outline-offset:2px; }
+        input[type=range]:focus-visible { outline:2px solid #047857 !important; outline-offset:4px; }
+        .oc-import { color:#047857; min-height:44px; }
+        .oc-import:focus-visible { outline-color:#047857; }
+        .sr-only { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+        .card-title, .download-label, .instructions, .reset-label, .status-empty .total-label, .status-empty .total-value { color:#64748b; }
+        .legend-item { color:#475569; }
+        .status-green .total-label, .status-green .total-value { color:#15803d; }
+        .status-orange .total-label, .status-orange .total-value { color:#c2410c; }
+        .status-red .total-label, .status-red .total-value { color:#b91c1c; }
+        .slider-value-badge.val-0 { color:#475569; }
+        .slider-value-badge.val-1 { color:#991b1b; }
+        .slider-value-badge.val-2 { color:#9a3412; }
+        .slider-value-badge.val-3 { color:#166534; }
+        .score-option label { min-height:44px; display:flex; align-items:center; justify-content:center; color:#475569; }
+        .score-option input:checked + label.score-1 { color:#991b1b; }
+        .score-option input:checked + label.score-2 { color:#9a3412; }
+        .score-option input:checked + label.score-3 { color:#166534; }
+        .score-option input:focus-visible { outline:none !important; }
+        .score-option input:focus-visible + label { outline:2px solid #047857; outline-offset:2px; }
+        .toelichting-wrap:not(.visible) { visibility:hidden; }
+        .slider-label { border-bottom:1px dashed #94a3b8; display:inline-flex; align-items:center; min-height:44px; min-width:44px; margin:-11px 0; }
+        .btn { min-height:44px; }
+        .btn-primary { background:#047857; color:#fff; border-radius:10px; font-size:15px; }
+        .btn-primary:hover { background:#065f46; }
+        .btn-ghost:hover { border-color:#047857; color:#047857; }
+        .btn-reset { min-height:44px; }
+        .ocw-btn { min-height:44px; }
+        .ocw-ok { background:#b91c1c; }
+        .ocw-ok:hover { background:#991b1b; }
+        .toast.toast-success { background:#047857; }
+        .toelichting-input::placeholder, .project-name-input::placeholder { color:#64748b; }
     </style>
 </head>
 <body>
-    <header class="header">
-        <a href="https://onderconstructie.github.io/projectmanagement/" class="back-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
+    <header class="header oc-head">
+        <a href="https://onderconstructie.github.io/projectmanagement/" class="back-link" aria-label="Terug naar Projectmanagement">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Projectmanagement
         </a>
-        <div class="header-content">
-            <div class="logo">
-                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="logo" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="20" cy="20" r="16" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
                     <circle cx="20" cy="20" r="10" fill="none" stroke="#10b981" stroke-width="1" opacity="0.5"/>
                     <circle cx="20" cy="20" r="5" fill="none" stroke="#10b981" stroke-width="1" opacity="0.3"/>
                     <path d="M20 6 L20 20 L32 12" fill="#10b981" opacity="0.6"/>
                     <circle cx="20" cy="20" r="2.5" fill="#10b981"/>
                 </svg>
-            </div>
-            <div class="header-text">
-                <h1>Project Radar</h1>
-                <p>Projectstatus in één oogopslag</p>
-            </div>
         </div>
+        <h1 class="title">Project Radar</h1>
+        <p class="subtitle">Projectstatus in één oogopslag.</p>
     </header>
 
     <div class="container">
         <div class="project-name-section">
-            <input type="text" class="project-name-input" id="projectName" placeholder="Projectnaam invullen..." autocomplete="off">
+            <input type="text" class="project-name-input" id="projectName" placeholder="Projectnaam invullen..." autocomplete="off" aria-label="Projectnaam">
         </div>
 
         <div class="main-grid">
@@ -603,7 +645,7 @@
                 <div class="download-section">
                     <div class="download-label">Exporteren</div>
                     <div class="download-buttons">
-                        <button class="btn btn-primary" id="downloadPdf">
+                        <button class="btn btn-secondary" id="downloadPdf" type="button">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
                             PDF opslaan als…
                         </button>
@@ -636,7 +678,7 @@
             <div class="card">
                 <h2 class="card-title">Beoordeling per categorie</h2>
                 <div class="sliders-list" id="slidersList"></div>
-                <p class="instructions">Klik op een status • Hover voor uitleg</p>
+                <p class="instructions">Kies per categorie een status. Tik op de naam van een categorie voor uitleg.</p>
             </div>
 
             <div class="reset-card">
@@ -652,16 +694,16 @@
     <footer class="footer oc-footer">
         <p class="quote oc-quote">Focus op wat je kunt sturen; laat de rest zijn werk doen.</p>
     </footer>
-    <div class="tooltip" id="tooltip"></div>
+    <div class="tooltip" id="tooltip" role="tooltip"></div>
     <div class="toast" id="toast"></div>
 
     <!-- Hidden file input for JSON loading -->
-    <input type="file" id="jsonFileInput" accept=".json">
+    <input type="file" id="jsonFileInput" accept=".json" aria-label="Sessiebestand kiezen" hidden>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 
     <script>
-/* ---------- Overnemen tussen tools (gedeeld door de Onder Constructie-tools, v1) ----------
+/* ---------- Overnemen tussen tools (gedeeld door de Onder Constructie-tools, v2) ----------
    Alle tools draaien op hetzelfde domein en delen dus localStorage. Elke tool legt wat hij te bieden
    heeft klaar onder 'oc.share.<tool-id>', in een vaste vorm, zodat andere tools het kunnen overnemen
    zonder elkaars binnenkant te kennen.
@@ -699,20 +741,23 @@ const ocShare = (() => {
   }
   function clear(id) { try { localStorage.removeItem(PREFIX + id); } catch {} }
 
+  // Elke bron apart: één kapotte sleutel mag de andere niet verbergen.
   function sources(types, self) {
     const out = [];
-    try {
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (!k || !k.startsWith(PREFIX) || k === PREFIX + self) continue;
+    let keys = [];
+    try { for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i)); } catch { return out; }
+    keys.forEach(k => {
+      if (!k || !k.startsWith(PREFIX) || k === PREFIX + self) return;
+      try {
         const d = JSON.parse(localStorage.getItem(k));
-        if (!d || !Array.isArray(d.lists)) continue;
+        if (!d || !Array.isArray(d.lists)) return;
         d.lists.forEach(l => {
-          const items = l.items.filter(it => types.includes(it.type));
-          if (items.length) out.push({ tool: d.tool || d.id, id: d.id, updated: d.updated, list: l.name, items });
+          if (!l || !Array.isArray(l.items)) return;
+          const items = l.items.filter(it => it && types.includes(it.type) && typeof it.text === 'string');
+          if (items.length) out.push({ tool: String(d.tool || d.id || k.slice(PREFIX.length)), id: d.id, updated: +d.updated || 0, list: String(l.name || ''), items });
         });
-      }
-    } catch {}
+      } catch {}
+    });
     return out.sort((a, b) => (b.updated || 0) - (a.updated || 0));
   }
 
@@ -794,7 +839,7 @@ const ocShare = (() => {
 
   // Hoeveel er klaarligt voor deze soorten (om een knop te tonen of een teller te zetten).
   const count = (types, self) => sources(types, self).reduce((n, s) => n + s.items.length, 0);
-  return { publish, clear, pick, count, sources };
+  return { publish, clear, pick, count, sources, esc };
 })();
 
 /* ---------- Download als afbeelding of PDF (gedeeld door de Onder Constructie-tools, v2) ----------
@@ -1022,12 +1067,16 @@ const ocExport = (() => {
 
         // ── Chart ─────────────────────────────────────────────────────────────
 
+        // Op smalle schermen lange namen over twee regels, zodat niets afgekapt wordt.
+        const SHORT_LABELS = { communication: ['Communi-', 'catie'], dependencies: ['Afhanke-', 'lijkheden'], stakeholders: ['Stake-', 'holders'] };
+        const radarLabels = w => categories.map(c => (w && w < 420 && SHORT_LABELS[c.id]) || c.label);
+
         function initChart() {
             const ctx = document.getElementById('radarChart').getContext('2d');
             radarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: categories.map(c => c.label),
+                    labels: radarLabels(document.getElementById('radarChart').parentNode.clientWidth),
                     datasets: [{
                         data: categories.map(() => 0),
                         backgroundColor: 'rgba(148,163,184,0.15)',
@@ -1042,6 +1091,8 @@ const ocExport = (() => {
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
+                    layout: { padding: 24 },
+                    onResize: (chart, size) => { chart.data.labels = radarLabels(size.width); },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
@@ -1124,6 +1175,9 @@ const ocExport = (() => {
             });
             radarChart.update();
 
+            const pdfBtn = document.getElementById('downloadPdf'), filled = data.some(v => v > 0);
+            pdfBtn.classList.toggle('btn-primary', filled); pdfBtn.classList.toggle('btn-secondary', !filled);
+
             const el = document.getElementById('totalStatus');
             el.className = `total-status status-${getStatusClass(weightedAvg)}`;
             document.getElementById('totalValue').textContent = getTotalStatusLabel(weightedAvg);
@@ -1138,7 +1192,7 @@ const ocExport = (() => {
                 item.className = 'slider-item';
                 item.innerHTML = `
                     <div class="slider-header">
-                        <span class="slider-label" data-cat="${cat.id}">${cat.label}</span>
+                        <span class="slider-label" data-cat="${cat.id}" tabindex="0" role="button" aria-label="${cat.label}: uitleg">${cat.label}</span>
                         <span class="slider-value-badge val-0" id="badge-${cat.id}">—</span>
                     </div>
                     <div class="score-options">
@@ -1156,7 +1210,7 @@ const ocExport = (() => {
                         </div>
                     </div>
                     <div class="toelichting-wrap" id="toelichting-wrap-${cat.id}">
-                        <textarea class="toelichting-input" id="toelichting-${cat.id}" rows="2" placeholder="Korte toelichting…"></textarea>
+                        <textarea class="toelichting-input" id="toelichting-${cat.id}" rows="2" placeholder="Korte toelichting…" aria-label="Toelichting bij ${cat.label}"></textarea>
                     </div>
                 `;
                 container.appendChild(item);
@@ -1185,6 +1239,15 @@ const ocExport = (() => {
 
                 label.addEventListener('mouseenter', e => showTooltip(e, cat));
                 label.addEventListener('mouseleave', hideTooltip);
+                // ook met toetsenbord en op aanraakschermen
+                label.addEventListener('focus', () => showTooltip({ target: label }, cat));
+                label.addEventListener('click', () => showTooltip({ target: label }, cat));
+                label.addEventListener('blur', hideTooltip);
+                label.addEventListener('keydown', e => { if (e.key === 'Escape') hideTooltip(); });
+                item.querySelectorAll('.score-option input').forEach((radio, idx) => {
+                    radio.addEventListener('focus', () => showScoreTooltip({ target: radio.nextElementSibling }, cat, idx + 1));
+                    radio.addEventListener('blur', hideTooltip);
+                });
                 badge.addEventListener('mouseenter', e => showTooltip(e, cat));
                 badge.addEventListener('mouseleave', hideTooltip);
                 scoreLabels.forEach((scoreLabel, idx) => {
@@ -1205,17 +1268,20 @@ const ocExport = (() => {
         function showTooltip(e, cat) {
             const t = document.getElementById('tooltip');
             t.textContent = cat.explanations[scores[cat.id]];
-            const r = e.target.getBoundingClientRect();
-            t.style.left = r.left + 'px';
-            t.style.top = (r.bottom + 8) + 'px';
-            t.classList.add('show');
+            placeTooltip(t, e.target.getBoundingClientRect(), 0);
         }
 
         function showScoreTooltip(e, cat, scoreValue) {
             const t = document.getElementById('tooltip');
             t.textContent = cat.explanations[scoreValue];
-            const r = e.target.getBoundingClientRect();
-            t.style.left = Math.max(10, r.left - 50) + 'px';
+            placeTooltip(t, e.target.getBoundingClientRect(), 50);
+        }
+
+        // Binnen het scherm houden, ook op smalle gsm's.
+        function placeTooltip(t, r, shift) {
+            t.style.maxWidth = Math.min(280, innerWidth - 16) + 'px';
+            t.style.left = '0px';
+            t.style.left = Math.max(8, Math.min(r.left - shift, innerWidth - t.offsetWidth - 8)) + 'px';
             t.style.top = (r.bottom + 8) + 'px';
             t.classList.add('show');
         }
@@ -1240,6 +1306,7 @@ const ocExport = (() => {
 
         // Exportweergave in de gedeelde Onder Constructie-layout (oc-export): radar, totaalstatus, scores per categorie.
         const STATUS_COLOR = { 0: '#94a3b8', 1: '#ef4444', 2: '#f97316', 3: '#22c55e' };
+        const STATUS_TEXT = { 0: '#64748b', 1: '#b91c1c', 2: '#c2410c', 3: '#15803d' };
         const STATUS_BG = { 0: '#f1f5f9', 1: '#fef2f2', 2: '#fff7ed', 3: '#f0fdf4' };
         const escHtml = v => String(v).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
@@ -1278,7 +1345,7 @@ const ocExport = (() => {
             const name = document.getElementById('projectName').value.trim() || 'Project Radar';
             const avg = calculateWeightedAverage();
             const total = getTotalStatusLabel(avg);
-            const totalColor = avg === 0 ? '#94a3b8' : avg < 2.0 ? '#ef4444' : avg < 2.7 ? '#f97316' : '#22c55e';
+            const totalColor = avg === 0 ? '#64748b' : avg < 2.0 ? '#b91c1c' : avg < 2.7 ? '#c2410c' : '#15803d';
             const node = document.createElement('div');
 
             const top = document.createElement('div');
@@ -1292,7 +1359,7 @@ const ocExport = (() => {
             side.style.cssText = 'flex:1;';
             const scored = categories.filter(c => scores[c.id] > 0).length;
             side.innerHTML = `
-                <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8">Totaalstatus</div>
+                <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#64748b">Totaalstatus</div>
                 <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;color:${totalColor};margin:4px 0 6px">${escHtml(total)}</div>
                 <div style="font-size:13px;color:#64748b">gewogen gemiddelde ${avg ? avg.toFixed(2).replace('.', ',') : '—'} op 3 · ${scored} van ${categories.length} categorieën beoordeeld</div>
                 <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
@@ -1303,13 +1370,13 @@ const ocExport = (() => {
 
             const table = document.createElement('div');
             table.innerHTML = `
-                <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:8px">Beoordeling per categorie</div>
+                <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#64748b;margin-bottom:8px">Beoordeling per categorie</div>
                 ${categories.map(cat => {
                     const v = scores[cat.id];
                     const note = (document.getElementById(`toelichting-${cat.id}`) || {}).value || '';
                     return `<div data-oc-keep style="display:grid;grid-template-columns:170px 150px 1fr;gap:16px;align-items:start;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px">
                         <span style="font-weight:600;color:#1e293b">${escHtml(cat.label)}</span>
-                        <span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;color:${STATUS_COLOR[v]};background:${STATUS_BG[v]}">${escHtml(getValueLabel(v) === '—' ? 'niet beoordeeld' : getValueLabel(v))}</span></span>
+                        <span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;color:${STATUS_TEXT[v]};background:${STATUS_BG[v]}">${escHtml(getValueLabel(v) === '—' ? 'niet beoordeeld' : getValueLabel(v))}</span></span>
                         <span style="color:#64748b;font-size:13px;line-height:1.45">${escHtml(note.trim())}</span>
                     </div>`;
                 }).join('')}`;
@@ -1372,13 +1439,14 @@ const ocExport = (() => {
             const weightedAvg = calculateWeightedAverage();
             const date = new Date().toLocaleDateString('nl-NL');
 
+            const cell = v => { let t = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
             let csv = 'Project,Datum,Categorie,Status,Toelichting\n';
             categories.forEach(cat => {
                 const status = getValueLabel(scores[cat.id]);
                 const toelichting = document.getElementById(`toelichting-${cat.id}`).value.trim();
-                csv += `"${name}","${date}","${cat.label}","${status}","${toelichting}"\n`;
+                csv += [name, date, cat.label, status, toelichting].map(cell).join(',') + '\n';
             });
-            csv += `"${name}","${date}","TOTAAL","${getTotalStatusLabel(weightedAvg)}"\n`;
+            csv += [name, date, 'TOTAAL', getTotalStatusLabel(weightedAvg)].map(cell).join(',') + '\n';
 
             const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
@@ -1417,7 +1485,7 @@ const ocExport = (() => {
         }
 
         function applySession(session, quiet) {
-            if (!session.scores || !session.toelichtingen) {
+            if (!session || typeof session.scores !== 'object' || typeof session.toelichtingen !== 'object' || !session.scores || !session.toelichtingen) {
                 showToast('Ongeldig sessiebestand', 'error');
                 return;
             }
@@ -1426,18 +1494,19 @@ const ocExport = (() => {
             reset();
 
             // Project name
-            document.getElementById('projectName').value = session.projectName || '';
+            document.getElementById('projectName').value = typeof session.projectName === 'string' ? session.projectName.slice(0, 200) : '';
 
             // Scores & toelichtingen
             categories.forEach(cat => {
-                const s = session.scores[cat.id] ?? 0;
+                const raw = Number(session.scores[cat.id]);
+                const s = [1, 2, 3].includes(raw) ? raw : 0;
                 if (s > 0) {
                     scores[cat.id] = s;
                     const radio = document.getElementById(`score-${cat.id}-${s}`);
                     if (radio) radio.checked = true;
                     updateBadge(cat.id, s);
 
-                    const toelichting = session.toelichtingen[cat.id] || '';
+                    const toelichting = typeof session.toelichtingen[cat.id] === 'string' ? session.toelichtingen[cat.id].slice(0, 2000) : '';
                     if (toelichting) {
                         document.getElementById(`toelichting-${cat.id}`).value = toelichting;
                         const wrap = document.getElementById(`toelichting-wrap-${cat.id}`);
