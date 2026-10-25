@@ -14,7 +14,7 @@
     <meta name="oc:traject" content="project:6">
     <meta name="oc:opslag" content="projectradar.v1">
 <link rel="stylesheet" href="/fonts/fonts.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox=&quot;0 0 40 40&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E %3Ccircle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;16&quot; fill=&quot;%23ecfdf5&quot; stroke=&quot;%2310b981&quot; stroke-width=&quot;1.5&quot;/%3E %3Ccircle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;10&quot; fill=&quot;none&quot; stroke=&quot;%2310b981&quot; stroke-width=&quot;1&quot; opacity=&quot;0.5&quot;/%3E %3Ccircle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;%2310b981&quot; stroke-width=&quot;1&quot; opacity=&quot;0.3&quot;/%3E %3Cpath d=&quot;M20 6 L20 20 L32 12&quot; fill=&quot;%2310b981&quot; opacity=&quot;0.6&quot;/%3E %3Ccircle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;2.5&quot; fill=&quot;%2310b981&quot;/%3E %3Cline x1=&quot;20&quot; y1=&quot;20&quot; x2=&quot;20&quot; y2=&quot;4&quot; stroke=&quot;%2364748b&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.3&quot;/%3E %3Cline x1=&quot;20&quot; y1=&quot;20&quot; x2=&quot;35&quot; y2=&quot;20&quot; stroke=&quot;%2364748b&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.3&quot;/%3E %3Cline x1=&quot;20&quot; y1=&quot;20&quot; x2=&quot;20&quot; y2=&quot;36&quot; stroke=&quot;%2364748b&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.3&quot;/%3E %3Cline x1=&quot;20&quot; y1=&quot;20&quot; x2=&quot;5&quot; y2=&quot;20&quot; stroke=&quot;%2364748b&quot; stroke-width=&quot;0.5&quot; opacity=&quot;0.3&quot;/%3E %3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox=&quot;0 0 40 40&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Ccircle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;18&quot; fill=&quot;%23f8fafc&quot; stroke=&quot;%23e2e8f0&quot; stroke-width=&quot;1.5&quot;/%3E%3Cpath d=&quot;M20.0 8.5L31.9 17.1L27.3 31.1L12.7 31.1L8.1 17.1Z&quot; fill=&quot;%23fff&quot; stroke=&quot;%2364748b&quot; stroke-width=&quot;1.4&quot; stroke-linejoin=&quot;round&quot;/%3E%3Cpath d=&quot;M20 21L20.0 8.5M20 21L31.9 17.1M20 21L27.3 31.1M20 21L12.7 31.1M20 21L8.1 17.1&quot; stroke=&quot;%23cbd5e1&quot; stroke-width=&quot;1&quot;/%3E%3Cpath d=&quot;M20.0 10.5L28.1 18.4L25.6 28.7L16.8 25.4L11.4 18.2Z&quot; fill=&quot;%2310b981&quot; fill-opacity=&quot;.35&quot; stroke=&quot;%23047857&quot; stroke-width=&quot;1.8&quot; stroke-linejoin=&quot;round&quot;/%3E%3C/svg%3E">
     <style>
         :root {
             --slate-50: #f8fafc;
@@ -35,15 +35,15 @@
             --red-500: #ef4444;
             --red-600: #dc2626;
             
-            --orange-50: #fff7ed;
-            --orange-100: #ffedd5;
-            --orange-500: #f97316;
-            --orange-600: #ea580c;
+            --orange-50: #fffbeb;
+            --orange-100: #fef3c7;
+            --orange-500: #f59e0b;
+            --orange-600: #b45309;
             
-            --green-50: #f0fdf4;
-            --green-100: #dcfce7;
-            --green-500: #22c55e;
-            --green-600: #16a34a;
+            --green-50: #ecfdf5;
+            --green-100: #d1fae5;
+            --green-500: #10b981;
+            --green-600: #047857;
             
             --accent: #10b981;
             --accent-light: #d1fae5;
@@ -144,9 +144,8 @@
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 400px;
-            grid-template-rows: 1fr auto;
             gap: 2rem;
-            align-items: stretch;
+            align-items: start;
         }
 
         @media (max-width: 900px) {
@@ -571,21 +570,23 @@
 
         .card-title, .download-label, .instructions, .reset-label, .status-empty .total-label, .status-empty .total-value { color:#64748b; }
         .legend-item { color:#475569; }
-        .status-green .total-label, .status-green .total-value { color:#15803d; }
-        .status-orange .total-label, .status-orange .total-value { color:#c2410c; }
+        .status-green .total-label, .status-green .total-value { color:#047857; }
+        .status-orange .total-label, .status-orange .total-value { color:#b45309; }
         .status-red .total-label, .status-red .total-value { color:#b91c1c; }
         .slider-value-badge.val-0 { color:#475569; }
         .slider-value-badge.val-1 { color:#991b1b; }
-        .slider-value-badge.val-2 { color:#9a3412; }
-        .slider-value-badge.val-3 { color:#166534; }
+        .slider-value-badge.val-2 { color:#92400e; }
+        .slider-value-badge.val-3 { color:#065f46; }
         .score-option label { min-height:44px; display:flex; align-items:center; justify-content:center; color:#475569; }
         .score-option input:checked + label.score-1 { color:#991b1b; }
-        .score-option input:checked + label.score-2 { color:#9a3412; }
-        .score-option input:checked + label.score-3 { color:#166534; }
+        .score-option input:checked + label.score-2 { color:#92400e; }
+        .score-option input:checked + label.score-3 { color:#065f46; }
         .score-option input:focus-visible { outline:none !important; }
         .score-option input:focus-visible + label { outline:2px solid #047857; outline-offset:2px; }
         .toelichting-wrap:not(.visible) { visibility:hidden; }
-        .slider-label { border-bottom:1px dashed #94a3b8; display:inline-flex; align-items:center; min-height:44px; min-width:44px; margin:-11px 0; }
+        .slider-label { display:inline-flex; align-items:center; gap:0.375rem; min-height:44px; min-width:44px; margin:-6px 0; padding-right:0.25rem; border-radius:8px; }
+        .slider-label .info { width:16px; height:16px; color:#94a3b8; flex:none; }
+        .slider-label:hover .info, .slider-label:focus-visible .info { color:#047857; }
         .btn { min-height:44px; }
         .btn-primary { background:#047857; color:#fff; border-radius:10px; font-size:15px; }
         .btn-primary:hover { background:#065f46; }
@@ -609,6 +610,27 @@
         .restart-row { display: flex; justify-content: center; margin-top: 1.25rem; }
         .restart-btn { min-height: 44px; padding: 0.5rem 1rem; font: inherit; font-size: 0.875rem; font-weight: 500; color: #64748b; background: none; border: 0; border-radius: 10px; cursor: pointer; text-decoration: underline; text-decoration-color: #cbd5e1; text-underline-offset: 3px; }
         .restart-btn:hover { color: #b91c1c; background: #fef2f2; text-decoration-color: currentColor; }
+        /* Panel oktober 2026 */
+        @media (min-width: 901px) { .main-grid > .card:first-child { position: sticky; top: 16px; } }
+        @media (max-width: 640px) {
+            .card { padding: 1.125rem 1rem; }
+            .radar-container { width: min(100%, 360px); max-width: none; aspect-ratio: auto; }
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn:disabled:hover { background: var(--slate-100); color: var(--slate-600); }
+        .download-buttons { flex-wrap: wrap; }
+        .total-value { font-variant-numeric: tabular-nums; }
+        .start-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:0.5rem 1rem; max-width:640px; margin:0 auto 1.25rem; padding:0.75rem 1rem; background:#fff; border:1.5px solid var(--slate-200); border-radius:var(--radius-lg); text-align:center; }
+        .start-bar p { font-size:0.9375rem; color:#334155; flex:1 1 16rem; }
+        .start-bar .btn { font-size:0.9375rem; font-weight:600; border-radius:10px; }
+        .vb-bar { display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem 0.75rem; max-width:1000px; margin:0 auto 1.25rem; padding:0.5rem 0.5rem 0.5rem 0.75rem; background:#fffbeb; border:1px solid #fde68a; border-radius:12px; font-size:0.875rem; line-height:1.4; color:#78350f; }
+        .vb-bar svg { width:18px; height:18px; flex-shrink:0; color:#b45309; }
+        .vb-text { flex:1 1 14rem; min-width:0; display:flex; gap:0.5rem; align-items:flex-start; }
+        .vb-btns { display:flex; flex-wrap:wrap; gap:0.375rem; }
+        .vb-btn { min-height:44px; padding:0.375rem 0.625rem; border-radius:10px; font:inherit; font-size:0.875rem; font-weight:600; background:#fff; border:1px solid var(--slate-200); cursor:pointer; }
+        .vb-wis { color:#b91c1c; border-color:#fecaca; }
+        .vb-eigen { color:#047857; border-color:#a7f3d0; }
+        [hidden] { display:none !important; }
     </style>
 </head>
 <body>
@@ -618,13 +640,7 @@
             Projectmanagement
         </a>
         <div class="logo" aria-hidden="true">
-            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="20" cy="20" r="16" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="10" fill="none" stroke="#10b981" stroke-width="1" opacity="0.5"/>
-                    <circle cx="20" cy="20" r="5" fill="none" stroke="#10b981" stroke-width="1" opacity="0.3"/>
-                    <path d="M20 6 L20 20 L32 12" fill="#10b981" opacity="0.6"/>
-                    <circle cx="20" cy="20" r="2.5" fill="#10b981"/>
-                </svg>
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><path d="M20.0 8.5L31.9 17.1L27.3 31.1L12.7 31.1L8.1 17.1Z" fill="#fff" stroke="#64748b" stroke-width="1.4" stroke-linejoin="round"/><path d="M20 21L20.0 8.5M20 21L31.9 17.1M20 21L27.3 31.1M20 21L12.7 31.1M20 21L8.1 17.1" stroke="#cbd5e1" stroke-width="1"/><path d="M20.0 10.5L28.1 18.4L25.6 28.7L16.8 25.4L11.4 18.2Z" fill="#10b981" fill-opacity=".35" stroke="#047857" stroke-width="1.8" stroke-linejoin="round"/></svg>
         </div>
         <h1 class="title">Project Radar</h1>
         <p class="subtitle">Hoe staat je project ervoor, in één beeld</p>
@@ -633,6 +649,15 @@
     <div class="container">
         <div class="project-name-section">
             <input type="text" class="project-name-input" id="projectName" placeholder="Projectnaam invullen..." autocomplete="off" aria-label="Projectnaam">
+        </div>
+
+        <div class="start-bar" id="startBar" hidden>
+            <p>Kies per categorie hoe je project ervoor staat. De radar en de totaalstatus volgen meteen.</p>
+            <button type="button" class="btn btn-secondary" id="exampleBtn">Voorbeeld bekijken</button>
+        </div>
+        <div class="vb-bar" id="vbBar" hidden>
+            <div class="vb-text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg><span>Dit is een voorbeeld om de tool te verkennen. Het telt niet mee in andere tools.</span></div>
+            <div class="vb-btns"><button type="button" class="vb-btn vb-wis" id="vbWis">Wis voorbeeld</button><button type="button" class="vb-btn vb-eigen" id="vbEigen">Maak er mijn eigen van</button></div>
         </div>
 
         <div class="main-grid">
@@ -650,21 +675,22 @@
                 <div class="legend">
                     <div class="legend-item"><span class="legend-dot red"></span><span>Zwaar probleem</span></div>
                     <div class="legend-item"><span class="legend-dot orange"></span><span>Licht probleem</span></div>
-                    <div class="legend-item"><span class="legend-dot green"></span><span>On track</span></div>
+                    <div class="legend-item"><span class="legend-dot green"></span><span>Op koers</span></div>
                 </div>
 
                 <div class="download-section">
                     <div class="download-label">Exporteren</div>
                     <div class="download-buttons">
-                        <button class="btn btn-secondary" id="downloadPdf" type="button">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-                            PDF opslaan als…
-                        </button>
-                        <button class="btn btn-secondary" id="downloadPng">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <button class="btn btn-secondary" id="downloadPng" type="button" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             Afbeelding
                         </button>
-                        <button class="btn btn-secondary" id="downloadCsv">
+                        <button class="btn btn-secondary" id="downloadPdf" type="button" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                            PDF
+                        </button>
+                        
+                        <button class="btn btn-secondary" id="downloadCsv" type="button" disabled>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2M8 17h2M14 13h2M14 17h2"/></svg>
                             CSV
                         </button>
@@ -691,15 +717,8 @@
                 <div class="sliders-list" id="slidersList"></div>
                 <p class="instructions">Kies per categorie een status. Tik op de naam van een categorie voor uitleg.</p>
             </div>
-
-            <div class="reset-card">
-                <div class="reset-label">Opnieuw beginnen?</div>
-                <button class="btn-reset" id="resetBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                    Opnieuw beginnen
-                </button>
-            </div>
         </div>
+        <div class="restart-row" id="restartRow" hidden><button type="button" class="restart-btn" id="resetBtn">Opnieuw beginnen</button></div>
     </div>
 
     <footer class="footer oc-footer">
@@ -954,59 +973,59 @@ const ocExport = (() => {
 })();
 
         const categories = [
-            { id: 'scope', label: 'Scope', weight: 1.2, explanations: {
-                0: 'Scope: Nog niet beoordeeld',
-                1: 'Scope: Grote wijzigingen of onduidelijkheid over deliverables. Dreigt uit de hand te lopen.',
-                2: 'Scope: Kleine wijzigingen of aandachtspunten. Beheersbaar maar moet gemonitord worden.',
-                3: 'Scope: Helder gedefinieerd en stabiel. Deliverables liggen op schema.'
+            { id: 'scope', label: 'Inhoud', weight: 1.2, explanations: {
+                0: 'Inhoud: nog niet beoordeeld',
+                1: 'Inhoud: grote wijzigingen of onduidelijkheid over wat er opgeleverd moet worden. Dreigt uit de hand te lopen.',
+                2: 'Inhoud: kleine wijzigingen of aandachtspunten. Beheersbaar, maar blijf het volgen.',
+                3: 'Inhoud: helder en stabiel. Wat opgeleverd moet worden, ligt op schema.'
             }},
             { id: 'planning', label: 'Planning', weight: 1.2, explanations: {
-                0: 'Planning: Nog niet beoordeeld',
-                1: 'Planning: Significante vertraging (>2 weken). Kritieke mijlpalen in gevaar.',
-                2: 'Planning: Lichte vertraging of druk op deadlines. Extra aandacht nodig.',
-                3: 'Planning: Op schema. Mijlpalen worden gehaald volgens plan.'
+                0: 'Planning: nog niet beoordeeld',
+                1: 'Planning: flinke vertraging (meer dan twee weken). Belangrijke mijlpalen komen in gevaar.',
+                2: 'Planning: lichte vertraging of druk op de einddata. Extra aandacht nodig.',
+                3: 'Planning: op schema. De mijlpalen worden gehaald.'
             }},
             { id: 'budget', label: 'Budget', weight: 1.1, explanations: {
-                0: 'Budget: Nog niet beoordeeld',
-                1: 'Budget: Significante overschrijding (>10%) of onvoldoende middelen. Escalatie nodig.',
-                2: 'Budget: Lichte druk of afwijking. Bijsturing mogelijk maar moet bewaakt worden.',
-                3: 'Budget: Binnen budget. Kosten onder controle en voorspelbaar.'
+                0: 'Budget: nog niet beoordeeld',
+                1: 'Budget: flinke overschrijding (meer dan 10 %) of te weinig middelen. Hogerop aankaarten.',
+                2: 'Budget: lichte druk of afwijking. Bijsturen kan nog, maar volg het op.',
+                3: 'Budget: binnen het budget. De kosten zijn onder controle en voorspelbaar.'
             }},
             { id: 'communication', label: 'Communicatie', weight: 1.0, explanations: {
-                0: 'Communicatie: Nog niet beoordeeld',
-                1: 'Communicatie: Ernstige miscommunicatie of informatietekort. Stakeholders niet op de hoogte.',
-                2: 'Communicatie: Enkele hiaten in informatiedeling. Verbetering nodig in frequentie of helderheid.',
-                3: 'Communicatie: Helder en tijdig. Alle betrokkenen zijn goed geïnformeerd.'
+                0: 'Communicatie: nog niet beoordeeld',
+                1: 'Communicatie: ernstige misverstanden of te weinig informatie. Betrokkenen zijn niet op de hoogte.',
+                2: 'Communicatie: enkele gaten in de informatie. Communiceer vaker of duidelijker.',
+                3: 'Communicatie: helder en tijdig. Alle betrokkenen zijn goed geïnformeerd.'
             }},
             { id: 'risks', label: "Risico's", weight: 1.3, explanations: {
-                0: "Risico's: Nog niet beoordeeld",
-                1: "Risico's: Hoge risico's met grote kans en impact. Onvoldoende mitigatie.",
-                2: "Risico's: Bekende risico's met mitigatie in uitvoering. Verhoogde alertheid nodig.",
-                3: "Risico's: Geïdentificeerd en beheerst. Geen directe bedreigingen."
+                0: "Risico's: nog niet beoordeeld",
+                1: "Risico's: grote risico's met veel kans en impact. Te weinig maatregelen.",
+                2: "Risico's: bekende risico's, de maatregelen lopen. Blijf alert.",
+                3: "Risico's: in kaart gebracht en onder controle. Geen directe bedreigingen."
             }},
-            { id: 'issues', label: 'Issues', weight: 1.2, explanations: {
-                0: 'Issues: Nog niet beoordeeld',
-                1: 'Issues: Kritieke blokkades die voortgang belemmeren. Escalatie vereist.',
-                2: 'Issues: Open issues die aandacht vragen. Impact beperkt maar moet opgelost.',
-                3: 'Issues: Geen openstaande blokkades. Issues worden tijdig opgelost.'
+            { id: 'issues', label: 'Knelpunten', weight: 1.2, explanations: {
+                0: 'Knelpunten: nog niet beoordeeld',
+                1: 'Knelpunten: ernstige blokkades houden het werk tegen. Hogerop aankaarten.',
+                2: 'Knelpunten: open knelpunten die aandacht vragen. Beperkte impact, maar ze moeten opgelost worden.',
+                3: 'Knelpunten: niets blokkeert. Knelpunten worden tijdig opgelost.'
             }},
-            { id: 'resources', label: 'Resources', weight: 1.0, explanations: {
-                0: 'Resources: Nog niet beoordeeld',
-                1: 'Resources: Ernstig capaciteitstekort of uitval van sleutelpersonen.',
-                2: 'Resources: Krapte in bezetting of skills. Tijdelijke oplossingen nodig.',
-                3: 'Resources: Team compleet en capabel. Voldoende capaciteit beschikbaar.'
+            { id: 'resources', label: 'Mensen en middelen', weight: 1.0, explanations: {
+                0: 'Mensen en middelen: nog niet beoordeeld',
+                1: 'Mensen en middelen: ernstig tekort aan capaciteit of uitval van sleutelfiguren.',
+                2: 'Mensen en middelen: krapte in bezetting of kennis. Tijdelijke oplossingen nodig.',
+                3: 'Mensen en middelen: het team is volledig en bekwaam. Genoeg capaciteit.'
             }},
             { id: 'dependencies', label: 'Afhankelijkheden', weight: 1.1, explanations: {
-                0: 'Afhankelijkheden: Nog niet beoordeeld',
-                1: 'Afhankelijkheden: Kritieke externe afhankelijkheid in gevaar. Dreigt te blokkeren.',
-                2: 'Afhankelijkheden: Externe leveringen onder druk. Actieve opvolging nodig.',
-                3: 'Afhankelijkheden: Alle externe leveringen op schema. Geen zorgen.'
+                0: 'Afhankelijkheden: nog niet beoordeeld',
+                1: 'Afhankelijkheden: een belangrijke externe levering komt in gevaar. Dreigt te blokkeren.',
+                2: 'Afhankelijkheden: externe leveringen staan onder druk. Volg ze actief op.',
+                3: 'Afhankelijkheden: alle externe leveringen liggen op schema.'
             }},
-            { id: 'stakeholders', label: 'Stakeholders', weight: 1.0, explanations: {
-                0: 'Stakeholders: Nog niet beoordeeld',
-                1: 'Stakeholders: Conflicten of weerstand. Steun voor project onder druk.',
-                2: 'Stakeholders: Enkele zorgen of verwachtingsmanagement nodig.',
-                3: 'Stakeholders: Tevreden en betrokken. Goede communicatie en steun.'
+            { id: 'stakeholders', label: 'Betrokkenen', weight: 1.0, explanations: {
+                0: 'Betrokkenen: nog niet beoordeeld',
+                1: 'Betrokkenen: conflicten of weerstand. De steun voor het project staat onder druk.',
+                2: 'Betrokkenen: enkele zorgen. Verwachtingen bijsturen.',
+                3: 'Betrokkenen: tevreden en betrokken. Het project krijgt goede steun.'
             }}
         ];
 
@@ -1014,6 +1033,30 @@ const ocExport = (() => {
         categories.forEach(c => scores[c.id] = 0);
 
         let radarChart;
+        let isVoorbeeld = false;   // voorbeelddata: gemarkeerd met voorbeeld:true in de opslag
+
+        const VOORBEELD = {
+            version: 1, voorbeeld: true, projectName: 'Digitaal premieloket renovatie',
+            scores: { scope: 3, planning: 2, budget: 3, communication: 2, risks: 2, issues: 1, resources: 2, dependencies: 1, stakeholders: 3 },
+            toelichtingen: {
+                planning: 'De koppeling met het registratiesysteem loopt drie weken uit.',
+                communication: 'Loketmedewerkers hoorden pas laat van de nieuwe werkwijze.',
+                risks: 'Na de campagne in maart verwachten we een piek in aanvragen.',
+                issues: 'De testomgeving van de leverancier ligt al twee weken stil.',
+                resources: 'Een van de twee ontwikkelaars valt weg tot eind januari.',
+                dependencies: 'We wachten op het advies van de dienst informatieveiligheid.'
+            }
+        };
+        function hasData() {
+            return categories.some(c => scores[c.id] > 0) || !!document.getElementById('projectName').value.trim()
+                || categories.some(c => { const el = document.getElementById(`toelichting-${c.id}`); return el && el.value.trim(); });
+        }
+        function refreshBars() {
+            const any = hasData();
+            document.getElementById('startBar').hidden = any || isVoorbeeld;
+            document.getElementById('vbBar').hidden = !isVoorbeeld;
+            document.getElementById('restartRow').hidden = !any || isVoorbeeld;
+        }
 
         // ── Helpers ───────────────────────────────────────────────────────────
 
@@ -1021,7 +1064,7 @@ const ocExport = (() => {
             if (v === 0) return '—';
             if (v === 1) return 'Zwaar probleem';
             if (v === 2) return 'Licht probleem';
-            return 'On track';
+            return 'Op koers';
         }
 
         function calculateWeightedAverage() {
@@ -1041,7 +1084,7 @@ const ocExport = (() => {
             if (avg < 2.0) return 'Zwaar probleem';
             if (avg < 2.5) return 'Aandacht nodig';
             if (avg < 2.8) return 'Licht probleem';
-            return 'On track';
+            return 'Op koers';
         }
 
         function getStatusClass(avg) {
@@ -1054,17 +1097,13 @@ const ocExport = (() => {
         function getChartColors(avg) {
             if (avg === 0) return { bg: 'rgba(148,163,184,0.15)', border: '#94a3b8' };
             if (avg < 2.0) return { bg: 'rgba(239,68,68,0.15)', border: '#ef4444' };
-            if (avg < 2.7) return { bg: 'rgba(249,115,22,0.15)', border: '#f97316' };
-            return { bg: 'rgba(34,197,94,0.15)', border: '#22c55e' };
+            if (avg < 2.7) return { bg: 'rgba(245,158,11,0.18)', border: '#f59e0b' };
+            return { bg: 'rgba(16,185,129,0.18)', border: '#10b981' };
         }
 
-        // Filename: projectnaam_2026-03-15
-        function buildFilename(ext) {
-            const name = document.getElementById('projectName').value.trim() || 'project-radar';
-            const date = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-            const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
-            return `${slug}_${date}.${ext}`;
-        }
+        // Bestandsnaam: project-radar-<project>-<datum>
+        function ocProject(fb) { try { const p = JSON.parse(localStorage.getItem('oc.project')); return p && typeof p.name === 'string' && p.name.trim() ? p.name.trim().slice(0, 80) : fb; } catch { return fb; } }
+        function buildFilename(ext) { return exportName() + '.' + ext; }
 
         // ── Toast ─────────────────────────────────────────────────────────────
 
@@ -1080,8 +1119,8 @@ const ocExport = (() => {
         // ── Chart ─────────────────────────────────────────────────────────────
 
         // Op smalle schermen lange namen over twee regels, zodat niets afgekapt wordt.
-        const SHORT_LABELS = { communication: ['Communi-', 'catie'], dependencies: ['Afhanke-', 'lijkheden'], stakeholders: ['Stake-', 'holders'] };
-        const radarLabels = w => categories.map(c => (w && w < 420 && SHORT_LABELS[c.id]) || c.label);
+        const SHORT_LABELS = { communication: ['Communi-', 'catie'], resources: ['Mensen en', 'middelen'], dependencies: ['Afhanke-', 'lijkheden'], stakeholders: ['Betrok-', 'kenen'] };
+        const radarLabels = w => categories.map(c => (w && w < 420 && SHORT_LABELS[c.id]) || (c.id === 'resources' ? ['Mensen en', 'middelen'] : c.label));
 
         function initChart() {
             const ctx = document.getElementById('radarChart').getContext('2d');
@@ -1103,7 +1142,8 @@ const ocExport = (() => {
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    layout: { padding: 24 },
+                    aspectRatio: innerWidth < 640 ? 1.2 : 1,
+                    layout: { padding: innerWidth < 640 ? 4 : 24 },
                     onResize: (chart, size) => { chart.data.labels = radarLabels(size.width); },
                     plugins: {
                         legend: { display: false },
@@ -1135,7 +1175,9 @@ const ocExport = (() => {
                 const el = document.getElementById(`toelichting-${cat.id}`);
                 toelichtingen[cat.id] = el ? el.value : '';
             });
-            return { version: 1, savedAt: new Date().toISOString(), projectName: document.getElementById('projectName').value, scores: { ...scores }, toelichtingen };
+            const out = { version: 1, savedAt: new Date().toISOString(), projectName: document.getElementById('projectName').value, scores: { ...scores }, toelichtingen };
+            if (isVoorbeeld) out.voorbeeld = true;
+            return out;
         }
         function saveState() {
             if (!loaded) return;
@@ -1221,13 +1263,14 @@ const ocExport = (() => {
             radarChart.data.datasets[0].pointBackgroundColor = data.map(d => {
                 if (d === 0) return '#94a3b8';
                 if (d === 1) return '#ef4444';
-                if (d === 2) return '#f97316';
-                return '#22c55e';
+                if (d === 2) return '#f59e0b';
+                return '#10b981';
             });
             radarChart.update();
 
-            const pdfBtn = document.getElementById('downloadPdf'), filled = data.some(v => v > 0);
-            pdfBtn.classList.toggle('btn-primary', filled); pdfBtn.classList.toggle('btn-secondary', !filled);
+            const filled = data.some(v => v > 0);
+            ['downloadPng', 'downloadPdf', 'downloadCsv'].forEach(id => { document.getElementById(id).disabled = !filled; });
+            refreshBars();
 
             const el = document.getElementById('totalStatus');
             el.className = `total-status status-${getStatusClass(weightedAvg)}`;
@@ -1243,7 +1286,7 @@ const ocExport = (() => {
                 item.className = 'slider-item';
                 item.innerHTML = `
                     <div class="slider-header">
-                        <span class="slider-label" data-cat="${cat.id}" tabindex="0" role="button" aria-label="${cat.label}: uitleg">${cat.label}</span>
+                        <span class="slider-label" data-cat="${cat.id}" tabindex="0" role="button" aria-label="${cat.label}: uitleg"><span>${cat.label}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="info" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span>
                         <span class="slider-value-badge val-0" id="badge-${cat.id}">—</span>
                     </div>
                     <div class="score-options">
@@ -1257,7 +1300,7 @@ const ocExport = (() => {
                         </div>
                         <div class="score-option">
                             <input type="radio" name="score-${cat.id}" id="score-${cat.id}-3" value="3">
-                            <label for="score-${cat.id}-3" class="score-3">On track</label>
+                            <label for="score-${cat.id}-3" class="score-3">Op koers</label>
                         </div>
                     </div>
                     <div class="toelichting-wrap" id="toelichting-wrap-${cat.id}">
@@ -1350,35 +1393,47 @@ const ocExport = (() => {
                 document.getElementById(`toelichting-wrap-${cat.id}`).classList.remove('visible');
             });
             document.getElementById('projectName').value = '';
+            isVoorbeeld = false;
             updateChart();
         }
 
         // ── Exports ───────────────────────────────────────────────────────────
 
         // Exportweergave in de gedeelde Onder Constructie-layout (oc-export): radar, totaalstatus, scores per categorie.
-        const STATUS_COLOR = { 0: '#94a3b8', 1: '#ef4444', 2: '#f97316', 3: '#22c55e' };
-        const STATUS_TEXT = { 0: '#64748b', 1: '#b91c1c', 2: '#c2410c', 3: '#15803d' };
-        const STATUS_BG = { 0: '#f1f5f9', 1: '#fef2f2', 2: '#fff7ed', 3: '#f0fdf4' };
+        const STATUS_COLOR = { 0: '#94a3b8', 1: '#ef4444', 2: '#f59e0b', 3: '#10b981' };
+        const STATUS_TEXT = { 0: '#64748b', 1: '#b91c1c', 2: '#b45309', 3: '#047857' };
+        const STATUS_BG = { 0: '#f1f5f9', 1: '#fef2f2', 2: '#fffbeb', 3: '#ecfdf5' };
         const escHtml = v => String(v).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
         function exportName() {
-            const name = document.getElementById('projectName').value.trim() || 'project';
+            const name = document.getElementById('projectName').value.trim() || ocProject('');
+            const date = new Date().toISOString().slice(0, 10);
             const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'project';
-            return `projectradar-${slug}-${new Date().toISOString().slice(0, 10)}`;
+                .replace(/[^a-z0-9]+/g, '-').replace(/-?\d{4}-\d{2}-\d{2}-?/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+            return ['project-radar', slug, date].filter(Boolean).join('-');
         }
 
-        // Radar scherp (3x) opnieuw tekenen en de lege rand eromheen wegsnijden.
+        // Radar voor de export: een aparte grafiek op vaste grootte en driedubbele resolutie, met grotere labels.
         function radarImage() {
-            const chart = radarChart, canvas = document.getElementById('radarChart');
-            let src = canvas;
-            if (chart && chart.options) {
-                const prev = chart.options.devicePixelRatio;
-                chart.options.devicePixelRatio = 3; chart.resize(); chart.update('none');
-                src = document.createElement('canvas'); src.width = canvas.width; src.height = canvas.height;
-                src.getContext('2d').drawImage(canvas, 0, 0);
-                chart.options.devicePixelRatio = prev; chart.resize(); chart.update('none');
-            }
+            const S = 520, d = radarChart.data.datasets[0];
+            const holder = document.createElement('div');
+            holder.style.cssText = `position:fixed;left:-30000px;top:0;width:${S}px;height:${S}px;`;
+            const canvas = document.createElement('canvas');
+            canvas.style.cssText = `width:${S}px;height:${S}px;`;
+            holder.appendChild(canvas); document.body.appendChild(holder);
+            const tmp = new Chart(canvas.getContext('2d'), {
+                type: 'radar',
+                data: { labels: categories.map(c => c.id === 'resources' ? ['Mensen en', 'middelen'] : c.label),
+                    datasets: [{ data: [...d.data], backgroundColor: d.backgroundColor, borderColor: d.borderColor, borderWidth: 2.5,
+                        pointBackgroundColor: d.pointBackgroundColor, pointBorderColor: '#fff', pointBorderWidth: 1.5, pointRadius: 6 }] },
+                options: { responsive: false, animation: false, devicePixelRatio: 3, layout: { padding: 6 },
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: { r: { min: 0, max: 3, ticks: { display: false }, grid: { color: '#e2e8f0' }, angleLines: { color: '#e2e8f0' },
+                        pointLabels: { font: { size: 15, weight: '600', family: "'DM Sans', system-ui, sans-serif" }, color: '#334155' } } } }
+            });
+            const src = document.createElement('canvas'); src.width = canvas.width; src.height = canvas.height;
+            src.getContext('2d').drawImage(canvas, 0, 0);
+            tmp.destroy(); holder.remove();
             const ctx = src.getContext('2d'), { width: w, height: h } = src;
             const px = ctx.getImageData(0, 0, w, h).data;
             let x0 = w, y0 = h, x1 = 0, y1 = 0;
@@ -1396,7 +1451,7 @@ const ocExport = (() => {
             const name = document.getElementById('projectName').value.trim() || 'Project Radar';
             const avg = calculateWeightedAverage();
             const total = getTotalStatusLabel(avg);
-            const totalColor = avg === 0 ? '#64748b' : avg < 2.0 ? '#b91c1c' : avg < 2.7 ? '#c2410c' : '#15803d';
+            const totalColor = avg === 0 ? '#64748b' : avg < 2.0 ? '#b91c1c' : avg < 2.7 ? '#b45309' : '#047857';
             const node = document.createElement('div');
 
             const top = document.createElement('div');
@@ -1414,7 +1469,7 @@ const ocExport = (() => {
                 <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;color:${totalColor};margin:4px 0 6px">${escHtml(total)}</div>
                 <div style="font-size:13px;color:#64748b">gewogen gemiddelde ${avg ? avg.toFixed(2).replace('.', ',') : '—'} op 3 · ${scored} van ${categories.length} categorieën beoordeeld</div>
                 <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
-                    ${[[1, 'Zwaar probleem'], [2, 'Licht probleem'], [3, 'On track']].map(([v, l]) =>
+                    ${[[1, 'Zwaar probleem'], [2, 'Licht probleem'], [3, 'Op koers']].map(([v, l]) =>
                         `<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:${STATUS_COLOR[v]}"></span>${l}</div>`).join('')}
                 </div>`;
             top.append(img, side);
@@ -1474,7 +1529,7 @@ const ocExport = (() => {
                         const writable = await handle.createWritable();
                         await writable.write(blob);
                         await writable.close();
-                        showToast('PDF opgeslagen ✓', 'success');
+                        showToast('PDF opgeslagen', 'success');
                     } catch { showToast('Downloaden lukt nu niet: geen verbinding?', 'error'); }
                     return;
                 }
@@ -1522,6 +1577,7 @@ const ocExport = (() => {
                 scores: { ...scores },
                 toelichtingen
             };
+            if (isVoorbeeld) session.voorbeeld = true;
 
             const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
             const link = document.createElement('a');
@@ -1543,6 +1599,7 @@ const ocExport = (() => {
 
             // Reset first
             reset();
+            isVoorbeeld = session.voorbeeld === true;
 
             // Project name
             document.getElementById('projectName').value = typeof session.projectName === 'string' ? session.projectName.slice(0, 200) : '';
@@ -1578,12 +1635,14 @@ const ocExport = (() => {
 
         document.addEventListener('DOMContentLoaded', () => {
             createScoreInputs();
+            if (window.Chart) Chart.defaults.font.family = "'DM Sans', system-ui, -apple-system, sans-serif";
             initChart();
             loadState();
+            refreshBars();
             // projectnaam en toelichtingen bewaren terwijl je typt
             document.addEventListener('input', e => {
                 const id = e.target && e.target.id || '';
-                if (id === 'projectName' || id.startsWith('toelichting-')) saveState();
+                if (id === 'projectName' || id.startsWith('toelichting-')) { saveState(); refreshBars(); }
             });
 
             // Alles wissen, met Ongedaan zolang er intussen niets veranderde
@@ -1602,6 +1661,21 @@ const ocExport = (() => {
                     saveState();
                     ocToast('Teruggezet');
                 });
+            });
+            document.getElementById('exampleBtn').addEventListener('click', () => {
+                applySession(JSON.parse(JSON.stringify(VOORBEELD)), true);
+                saveState();
+                ocToast('Voorbeeld geladen');
+            });
+            document.getElementById('vbWis').addEventListener('click', () => {
+                const snap = ocStoreSnapshot(), copy = currentSession();
+                reset();
+                try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+                ocToast('Voorbeeld gewist', () => { ocStoreRestore(snap); applySession(copy, true); saveState(); });
+            });
+            document.getElementById('vbEigen').addEventListener('click', () => {
+                isVoorbeeld = false; saveState(); refreshBars();
+                ocToast('Het voorbeeld is nu van jou');
             });
             document.getElementById('downloadPng').addEventListener('click', downloadPng);
             document.getElementById('downloadPdf').addEventListener('click', downloadPdf);
