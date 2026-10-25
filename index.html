@@ -1497,7 +1497,7 @@ const ocExport = (() => {
         }
 
         // Maakt de PDF via oc-export, maar vangt het bestand op in plaats van het te downloaden,
-        // zodat "PDF opslaan als…" het rechtstreeks in een gekozen map kan schrijven (bv. SharePoint).
+        // zodat "PDF opslaan als…" het rechtstreeks in een gekozen map kan schrijven (bv. jullie gedeelde map).
         async function pdfBlob() {
             let captured = null;
             const origURL = URL.createObjectURL, origClick = HTMLAnchorElement.prototype.click;
@@ -1511,7 +1511,7 @@ const ocExport = (() => {
 
         async function downloadPdf() {
             const filename = exportName() + '.pdf';
-            // Chrome/Edge: eerst de plaats kiezen (moet meteen na de klik), dan het bestand maken en wegschrijven.
+            // Browsers met een opslagvenster: eerst de plaats kiezen (moet meteen na de klik), dan het bestand maken en wegschrijven.
             if (window.showSaveFilePicker) {
                 let handle;
                 try {
