@@ -14,6 +14,11 @@
     <meta name="oc:traject" content="project:6">
     <meta name="oc:opslag" content="projectradar.v1">
 <link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="preload" href="/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/lib/chart-4.4.1.umd.js" as="script">
+<style>html.oc-wacht body > .container, html.oc-wacht body > .footer { visibility:hidden; animation:oc-toon 0s 2.5s forwards; } @keyframes oc-toon { to { visibility:visible; } }</style>
+<script>document.documentElement.classList.add('oc-wacht');</script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox=&quot;0 0 40 40&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Ccircle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;18&quot; fill=&quot;%23f8fafc&quot; stroke=&quot;%23e2e8f0&quot; stroke-width=&quot;1.5&quot;/%3E%3Cpath d=&quot;M20.0 8.5L31.9 17.1L27.3 31.1L12.7 31.1L8.1 17.1Z&quot; fill=&quot;%23fff&quot; stroke=&quot;%2364748b&quot; stroke-width=&quot;1.4&quot; stroke-linejoin=&quot;round&quot;/%3E%3Cpath d=&quot;M20 21L20.0 8.5M20 21L31.9 17.1M20 21L27.3 31.1M20 21L12.7 31.1M20 21L8.1 17.1&quot; stroke=&quot;%23cbd5e1&quot; stroke-width=&quot;1&quot;/%3E%3Cpath d=&quot;M20.0 10.5L28.1 18.4L25.6 28.7L16.8 25.4L11.4 18.2Z&quot; fill=&quot;%2310b981&quot; fill-opacity=&quot;.35&quot; stroke=&quot;%23047857&quot; stroke-width=&quot;1.8&quot; stroke-linejoin=&quot;round&quot;/%3E%3C/svg%3E">
     <style>
         :root {
@@ -642,6 +647,18 @@
         .btn:focus-visible, .btn-ghost:focus-visible { outline:2px solid #047857 !important; outline-offset:2px; box-shadow:0 0 0 4px #d1fae5; }
         .project-name-input:focus-visible { outline:2px solid #047857 !important; outline-offset:2px; }
         [hidden] { display:none !important; }
+
+/* ---------- Soepel op gsm (oktober 2026): tikken, typen, schuiven ---------- */
+html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+button, a, summary, label, select, [role="button"], [role="tab"], [data-act], input[type="range"], input[type="checkbox"], input[type="radio"] { touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+@media (hover:none) { button:not(:disabled):active, a:active, summary:active, [role="button"]:active, [role="tab"]:active { filter:brightness(0.93); } }
+@media (pointer:coarse) { .toelichting-input, #projectName { font-size:16px !important; } }
+/* venster open: de pagina erachter schuift niet mee, en scrollen binnen het venster loopt niet door naar de pagina */
+html:has(.ocs-back, .ocw-back, .gal-back, .oc-dialog-backdrop) { overflow:hidden; }
+.ocs-back *, .ocw-back *, .gal-back * { overscroll-behavior:contain; }
+
+body { min-height:100dvh; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration:0.01ms !important; animation-duration:0.01ms !important; } }
     </style>
 </head>
 <body>
@@ -742,7 +759,6 @@
     <!-- Hidden file input for JSON loading -->
     <input type="file" id="jsonFileInput" accept=".json" aria-label="Sessiebestand kiezen" hidden>
 
-    <script src="/lib/chart-4.4.1.umd.js"></script>
 
     <script>
 /* ---------- Overnemen tussen tools (gedeeld door de Onder Constructie-tools, v2) ----------
@@ -1134,6 +1150,17 @@ const ocExport = (() => {
         const SHORT_LABELS = { communication: ['Communi-', 'catie'], resources: ['Mensen en', 'middelen'], dependencies: ['Afhanke-', 'lijkheden'], stakeholders: ['Betrok-', 'kenen'] };
         const radarLabels = w => categories.map(c => (w && w < 420 && SHORT_LABELS[c.id]) || (c.id === 'resources' ? ['Mensen en', 'middelen'] : c.label));
 
+        // De grafiekbibliotheek laden zonder de pagina op te houden (eerder blokkeerde ze het tekenen van alles eronder).
+        let chartLib = null;
+        function loadChartLib() {
+            if (window.Chart) return Promise.resolve();
+            if (!chartLib) chartLib = new Promise((ok, fail) => {
+                const s = document.createElement('script');
+                s.src = '/lib/chart-4.4.1.umd.js'; s.onload = ok; s.onerror = () => { chartLib = null; fail(new Error('laden mislukt')); };
+                document.head.appendChild(s);
+            });
+            return chartLib;
+        }
         function initChart() {
             const ctx = document.getElementById('radarChart').getContext('2d');
             radarChart = new Chart(ctx, {
@@ -1338,6 +1365,7 @@ const ocExport = (() => {
             const weightedAvg = calculateWeightedAverage();
             const colors = getChartColors(weightedAvg);
 
+            if (radarChart) {
             radarChart.data.datasets[0].data = data;
             radarChart.data.datasets[0].backgroundColor = colors.bg;
             radarChart.data.datasets[0].borderColor = colors.border;
@@ -1348,6 +1376,7 @@ const ocExport = (() => {
                 return '#10b981';
             });
             radarChart.update();
+            }
 
             const filled = data.some(v => v > 0);
             ['downloadPng', 'downloadPdf', 'downloadCsv'].forEach(id => { document.getElementById(id).disabled = !filled; });
@@ -1528,6 +1557,7 @@ const ocExport = (() => {
             return { url: out.toDataURL('image/png'), ratio: cw / ch };
         }
 
+        async function ensureChart() { if (!radarChart) { await loadChartLib(); if (!radarChart) { initChart(); updateChart(); } } }
         function buildExport() {
             const name = document.getElementById('projectName').value.trim() || 'Project Radar';
             const avg = calculateWeightedAverage();
@@ -1573,13 +1603,13 @@ const ocExport = (() => {
 
         async function downloadPng() {
             showToast('Bezig…');
-            try { await ocExport.png(buildExport, exportName()); showToast('Afbeelding gedownload', 'success'); }
+            try { await ensureChart(); await ocExport.png(buildExport, exportName()); showToast('Afbeelding gedownload', 'success'); }
             catch { showToast('Downloaden lukt nu niet: geen verbinding?', 'error'); }
         }
 
         async function downloadPdf() {
             showToast('Bezig…');
-            try { await ocExport.pdf(buildExport, exportName()); showToast('PDF gedownload', 'success'); }
+            try { await ensureChart(); await ocExport.pdf(buildExport, exportName()); showToast('PDF gedownload', 'success'); }
             catch { showToast('Downloaden lukt nu niet: geen verbinding?', 'error'); }
         }
 
@@ -1678,9 +1708,11 @@ const ocExport = (() => {
 
         document.addEventListener('DOMContentLoaded', () => {
             createScoreInputs();
-            if (window.Chart) Chart.defaults.font.family = "'DM Sans', system-ui, -apple-system, sans-serif";
-            initChart();
             loadState();
+            loadChartLib().then(() => {
+                Chart.defaults.font.family = "'DM Sans', system-ui, -apple-system, sans-serif";
+                initChart(); updateChart();
+            }).catch(() => {});
             refreshBars();
             // projectnaam en toelichtingen bewaren terwijl je typt
             document.addEventListener('input', e => {
@@ -1759,8 +1791,25 @@ const ocExport = (() => {
                 // Reset input so the same file can be reloaded if needed
                 e.target.value = '';
             });
+            document.documentElement.classList.remove('oc-wacht');
         });
     </script>
+<script>
+/* Soepel: de hulpbibliotheken voor Afbeelding en PDF alvast ophalen zodra iemand naar een downloadknop gaat (niet bij het laden). */
+(() => {
+  let warm = false;
+  const go = () => {
+    warm = true;
+    ['/lib/html2canvas-1.4.1.min.js', '/lib/jspdf-2.5.1.umd.min.js'].forEach(h => {
+      const l = document.createElement('link');
+      if (l.relList && l.relList.supports && l.relList.supports('prefetch')) { l.rel = 'prefetch'; l.as = 'script'; l.href = h; document.head.appendChild(l); }
+      else try { fetch(h).catch(() => {}); } catch (e) {}
+    });
+  };
+  const SEL = '#downloadPng, #downloadPdf';
+  ['pointerdown', 'focusin', 'mouseover'].forEach(t => document.addEventListener(t, e => { if (!warm && e.target.closest && e.target.closest(SEL)) go(); }, { passive:true, capture:true }));
+})();
+</script>
 <script>
 /* oc-sync: reageert op "Afsluiten" in de app (ook in andere tabbladen) en geeft Esc door aan de app */
 (function () {
