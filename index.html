@@ -215,6 +215,7 @@
         .status-empty .total-label { color: var(--slate-400); }
 
         .total-value { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+        .total-note { font-size: 0.8125rem; color: #475569; margin-top: 0.25rem; font-variant-numeric: tabular-nums; }
         .status-green .total-value { color: var(--green-600); }
         .status-orange .total-value { color: var(--orange-600); }
         .status-red .total-value { color: var(--red-600); }
@@ -711,6 +712,7 @@ body { min-height:100dvh; }
                 <div class="total-status status-empty" id="totalStatus">
                     <div class="total-label">Totaalstatus</div>
                     <div class="total-value" id="totalValue">—</div>
+                    <div class="total-note" id="totalNote" hidden></div>
                 </div>
 
                 <div class="legend">
@@ -1007,11 +1009,11 @@ const ocExport = (() => {
                 0: 'Inhoud: nog niet beoordeeld',
                 1: 'Inhoud: grote wijzigingen of onduidelijkheid over wat er opgeleverd moet worden. Dreigt uit de hand te lopen.',
                 2: 'Inhoud: kleine wijzigingen of aandachtspunten. Beheersbaar, maar blijf het volgen.',
-                3: 'Inhoud: helder en stabiel. Wat opgeleverd moet worden, ligt op schema.'
+                3: 'Inhoud: helder en stabiel. Iedereen weet wat er opgeleverd wordt.'
             }},
             { id: 'planning', label: 'Planning', weight: 1.2, explanations: {
                 0: 'Planning: nog niet beoordeeld',
-                1: 'Planning: flinke vertraging (meer dan twee weken). Belangrijke mijlpalen komen in gevaar.',
+                1: 'Planning: flinke vertraging. Belangrijke mijlpalen of de einddatum komen in gevaar.',
                 2: 'Planning: lichte vertraging of druk op de einddata. Extra aandacht nodig.',
                 3: 'Planning: op schema. De mijlpalen worden gehaald.'
             }},
@@ -1108,28 +1110,24 @@ const ocExport = (() => {
             return totalWeight > 0 ? weightedSum / totalWeight : 0;
         }
 
-        function getTotalStatusLabel(avg) {
-            if (avg === 0) return '—';
-            if (avg < 1.5) return 'Kritiek';
-            if (avg < 2.0) return 'Zwaar probleem';
-            if (avg < 2.5) return 'Aandacht nodig';
-            if (avg < 2.8) return 'Licht probleem';
-            return 'Op koers';
+        /* Totaalstatus: één regel voor label en kleur.
+           Rood: gewogen gemiddelde onder 2. Groen: gemiddelde vanaf 2,7 en geen enkel zwaar probleem.
+           Al de rest: aandacht nodig. Eén zwaar probleem maakt het totaal dus nooit groen. */
+        function totalLevel(sc) {
+            let tw = 0, ws = 0, n = 0, red = 0;
+            categories.forEach(c => { const v = sc[c.id]; if (v > 0) { ws += v * c.weight; tw += c.weight; n++; if (v === 1) red++; } });
+            const avg = tw ? ws / tw : 0;
+            if (!avg) return { avg, n, red, cls: 'empty', label: '—', note: '' };
+            const cls = avg < 2 ? 'red' : (red || avg < 2.7) ? 'orange' : 'green';
+            const label = { red: 'Zwaar probleem', orange: 'Aandacht nodig', green: 'Op koers' }[cls];
+            const parts = [];
+            if (n < categories.length) parts.push(`${n} van ${categories.length} beoordeeld`);
+            if (cls === 'orange' && red && avg >= 2.7) parts.push(red === 1 ? 'niet groen: er is een zwaar probleem' : `niet groen: er zijn ${red} zware problemen`);
+            return { avg, n, red, cls, label, note: parts.join(' · ') };
         }
-
-        function getStatusClass(avg) {
-            if (avg === 0) return 'empty';
-            if (avg < 2.0) return 'red';
-            if (avg < 2.7) return 'orange';
-            return 'green';
-        }
-
-        function getChartColors(avg) {
-            if (avg === 0) return { bg: 'rgba(148,163,184,0.15)', border: '#94a3b8' };
-            if (avg < 2.0) return { bg: 'rgba(239,68,68,0.15)', border: '#ef4444' };
-            if (avg < 2.7) return { bg: 'rgba(245,158,11,0.18)', border: '#f59e0b' };
-            return { bg: 'rgba(16,185,129,0.18)', border: '#10b981' };
-        }
+        function getTotalStatusLabel() { return totalLevel(scores).label; }
+        const CHART_COLORS = { empty: { bg: 'rgba(148,163,184,0.15)', border: '#94a3b8' }, red: { bg: 'rgba(239,68,68,0.15)', border: '#ef4444' },
+            orange: { bg: 'rgba(245,158,11,0.18)', border: '#f59e0b' }, green: { bg: 'rgba(16,185,129,0.18)', border: '#10b981' } };
 
         // Bestandsnaam: project-radar-<project>-<datum>
         function ocProject(fb) { try { const p = JSON.parse(localStorage.getItem('oc.project')); return p && typeof p.name === 'string' && p.name.trim() ? p.name.trim().slice(0, 80) : fb; } catch { return fb; } }
@@ -1242,10 +1240,10 @@ const ocExport = (() => {
         const avgOf = p => { let tw = 0, ws = 0; categories.forEach(c => { if (p.scores[c.id] > 0) { ws += p.scores[c.id] * c.weight; tw += c.weight; } }); return tw ? ws / tw : 0; };
         function renderTabs() {
             document.getElementById('projTabs').innerHTML = state.projects.map(p => {
-                const a = avgOf(p), cls = getStatusClass(a);
+                const lv = totalLevel(p.scores), cls = lv.cls;
                 return `<button type="button" class="ptab${p.id === state.current ? ' active' : ''}" data-proj="${escHtml(p.id)}"${p.id === state.current ? ' aria-current="true"' : ''}>`
                     + `<span class="dot ${cls === 'empty' ? '' : cls}" aria-hidden="true"></span>${escHtml(p.name.trim() || 'Naamloos')}`
-                    + `<span class="sr-only">, ${escHtml(getTotalStatusLabel(a) === '—' ? 'nog niet beoordeeld' : getTotalStatusLabel(a))}</span>`
+                    + `<span class="sr-only">, ${escHtml(lv.label === '—' ? 'nog niet beoordeeld' : lv.label)}</span>`
                     + `${p.voorbeeld ? '<span class="vb-tag">voorbeeld</span>' : ''}</button>`;
             }).join('') + '<button type="button" class="ptab add" id="newProj">+ Project</button>';
             const many = state.projects.length > 1, rb = document.getElementById('resetBtn');
@@ -1289,7 +1287,19 @@ const ocExport = (() => {
             p.name = s.projectName.slice(0, 200); p.scores = s.scores; p.toelichtingen = s.toelichtingen;
             if (s.voorbeeld) p.voorbeeld = true; else delete p.voorbeeld;
             try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+            publishProblems();
             renderTabs();
+        }
+        /* Zware en lichte problemen klaarleggen als 'actie', zodat je ze kan opvolgen in het Takenbord of kan prioriteren.
+           Een voorbeeld wordt nooit klaargelegd. */
+        function publishProblems() {
+            if (!state) return;
+            const lists = state.projects.filter(p => !p.voorbeeld).map(p => ({ name: p.name.trim() || 'Project Radar', items: categories
+                .filter(c => p.scores[c.id] === 1 || p.scores[c.id] === 2)
+                .sort((a, b) => p.scores[a.id] - p.scores[b.id])
+                .map(c => { const t = (p.toelichtingen[c.id] || '').trim().replace(/\s+/g, ' ');
+                    return { type: 'actie', text: `${c.label} bijsturen${t ? ': ' + t : ''}`, note: getValueLabel(p.scores[c.id]) }; }) }));
+            try { ocShare.publish('project-radar', 'Project Radar', lists); } catch (e) {}
         }
         function loadState() {
             let d = null;
@@ -1299,6 +1309,7 @@ const ocExport = (() => {
             if (ap) { const m = state.projects.find(x => x.name === ap); if (m) state.current = m.id; }
             showProject(state.current);
             loaded = true;
+            publishProblems();
         }
 
         /* Melding met Ongedaan (6 s) */
@@ -1366,8 +1377,8 @@ const ocExport = (() => {
         function updateChart() {
             saveState();
             const data = categories.map(c => scores[c.id]);
-            const weightedAvg = calculateWeightedAverage();
-            const colors = getChartColors(weightedAvg);
+            const lv = totalLevel(scores);
+            const colors = CHART_COLORS[lv.cls];
 
             if (radarChart) {
             radarChart.data.datasets[0].data = data;
@@ -1387,8 +1398,9 @@ const ocExport = (() => {
             refreshBars();
 
             const el = document.getElementById('totalStatus');
-            el.className = `total-status status-${getStatusClass(weightedAvg)}`;
-            document.getElementById('totalValue').textContent = getTotalStatusLabel(weightedAvg);
+            el.className = `total-status status-${lv.cls}`;
+            document.getElementById('totalValue').textContent = lv.label;
+            const tn = document.getElementById('totalNote'); tn.textContent = lv.note; tn.hidden = !lv.note;
         }
 
         // ── Score inputs ──────────────────────────────────────────────────────
@@ -1564,9 +1576,9 @@ const ocExport = (() => {
         async function ensureChart() { if (!radarChart) { await loadChartLib(); if (!radarChart) { initChart(); updateChart(); } } }
         function buildExport() {
             const name = document.getElementById('projectName').value.trim() || 'Project Radar';
-            const avg = calculateWeightedAverage();
-            const total = getTotalStatusLabel(avg);
-            const totalColor = avg === 0 ? '#64748b' : avg < 2.0 ? '#b91c1c' : avg < 2.7 ? '#b45309' : '#047857';
+            const lv = totalLevel(scores), avg = lv.avg;
+            const total = lv.label;
+            const totalColor = { empty: '#64748b', red: '#b91c1c', orange: '#b45309', green: '#047857' }[lv.cls];
             const node = document.createElement('div');
 
             const top = document.createElement('div');
@@ -1583,6 +1595,7 @@ const ocExport = (() => {
                 <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#64748b">Totaalstatus</div>
                 <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;color:${totalColor};margin:4px 0 6px">${escHtml(total)}</div>
                 <div style="font-size:13px;color:#64748b">gewogen gemiddelde ${avg ? avg.toFixed(2).replace('.', ',') : '—'} op 3 · ${scored} van ${categories.length} categorieën beoordeeld</div>
+                ${lv.cls === 'orange' && lv.red && avg >= 2.7 ? `<div style="font-size:13px;color:#b45309;margin-top:2px">Niet groen: ${lv.red === 1 ? 'er is een zwaar probleem' : `er zijn ${lv.red} zware problemen`}.</div>` : ''}
                 <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
                     ${[[1, 'Zwaar probleem'], [2, 'Licht probleem'], [3, 'Op koers']].map(([v, l]) =>
                         `<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:${STATUS_COLOR[v]}"></span>${l}</div>`).join('')}
@@ -1619,17 +1632,17 @@ const ocExport = (() => {
 
         function downloadCsv() {
             const name = document.getElementById('projectName').value || 'Project Radar';
-            const weightedAvg = calculateWeightedAverage();
-            const date = new Date().toLocaleDateString('nl-NL');
+            const date = new Date().toLocaleDateString('nl-BE');
 
             const cell = v => { let t = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
-            let csv = 'Project,Datum,Categorie,Status,Toelichting\n';
+            let csv = 'Project;Datum;Categorie;Status;Toelichting\r\n';
             categories.forEach(cat => {
                 const status = getValueLabel(scores[cat.id]);
                 const toelichting = document.getElementById(`toelichting-${cat.id}`).value.trim();
-                csv += [name, date, cat.label, status, toelichting].map(cell).join(',') + '\n';
+                csv += [name, date, cat.label, status === '—' ? 'Niet beoordeeld' : status, toelichting].map(cell).join(';') + '\r\n';
             });
-            csv += [name, date, 'TOTAAL', getTotalStatusLabel(weightedAvg)].map(cell).join(',') + '\n';
+            const lv = totalLevel(scores);
+            csv += [name, date, 'Totaal', lv.label === '—' ? 'Niet beoordeeld' : lv.label, lv.note].map(cell).join(';') + '\r\n';
 
             const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
