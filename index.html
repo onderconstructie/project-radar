@@ -231,6 +231,9 @@
             border-top: 1px solid var(--slate-100);
         }
 
+        .legend-rule { font-size: 0.75rem; color: var(--slate-500); text-align: center; line-height: 1.5; margin: 0.75rem auto 0; max-width: 34rem; }
+        .next-note { font-size: 0.8125rem; color: #047857; background: #ecfdf5; border: 1px solid #d1fae5; border-radius: 10px; padding: 0.625rem 0.875rem; margin: 0.75rem 0 0; line-height: 1.45; text-align: center; }
+        .next-note[hidden] { display: none; }
         .legend-item { display: flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; color: var(--slate-500); }
 
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -773,6 +776,8 @@ body { min-height:100dvh; }
                     <div class="legend-item"><span class="legend-dot orange"></span><span>Licht probleem</span></div>
                     <div class="legend-item"><span class="legend-dot green"></span><span>Op koers</span></div>
                 </div>
+                <p class="legend-rule">De totaalstatus is een gewogen gemiddelde: risico's, inhoud, planning en knelpunten wegen iets zwaarder. Eén zwaar probleem maakt het nooit groen, twee maken het rood.</p>
+                <p class="next-note" id="nextNote" hidden>De problemen staan klaar als actie. Neem ze over in Takenbord of Prioriteren om ze op te volgen.</p>
 
             </div>
 
@@ -1048,7 +1053,7 @@ const ocExport = (() => {
             }},
             { id: 'budget', label: 'Budget', weight: 1.1, explanations: {
                 0: 'Budget: nog niet beoordeeld',
-                1: 'Budget: flinke overschrijding (meer dan 10 %) of te weinig middelen. Hogerop aankaarten.',
+                1: 'Budget: flinke overschrijding (meer dan 10%) of te weinig middelen. Hogerop aankaarten.',
                 2: 'Budget: lichte druk of afwijking. Bijsturen kan nog, maar volg het op.',
                 3: 'Budget: binnen het budget. De kosten zijn onder controle en voorspelbaar.'
             }},
@@ -1116,6 +1121,7 @@ const ocExport = (() => {
             const any = hasData();
             document.getElementById('startBar').hidden = any || isVoorbeeld;
             document.getElementById('vbBar').hidden = !isVoorbeeld;
+            document.getElementById('nextNote').hidden = isVoorbeeld || !categories.some(c => scores[c.id] === 1 || scores[c.id] === 2);
             document.getElementById('restartRow').hidden = (state && state.projects.length > 1) ? false : (!any || isVoorbeeld);
         }
 
@@ -1140,19 +1146,22 @@ const ocExport = (() => {
         }
 
         /* Totaalstatus: één regel voor label en kleur.
-           Rood: gewogen gemiddelde onder 2. Groen: gemiddelde vanaf 2,7 en geen enkel zwaar probleem.
-           Al de rest: aandacht nodig. Eén zwaar probleem maakt het totaal dus nooit groen. */
+           Rood: twee of meer zware problemen, of een gewogen gemiddelde onder 2.
+           Groen: gemiddelde vanaf 2,7 en geen enkel zwaar probleem. Al de rest: aandacht nodig.
+           Eén zwaar probleem maakt het totaal dus nooit groen, twee maken het rood. */
         function totalLevel(sc) {
             let tw = 0, ws = 0, n = 0, red = 0;
             categories.forEach(c => { const v = sc[c.id]; if (v > 0) { ws += v * c.weight; tw += c.weight; n++; if (v === 1) red++; } });
             const avg = tw ? ws / tw : 0;
-            if (!avg) return { avg, n, red, cls: 'empty', label: '—', note: '' };
-            const cls = avg < 2 ? 'red' : (red || avg < 2.7) ? 'orange' : 'green';
+            if (!avg) return { avg, n, red, cls: 'empty', label: '—', note: '', reason: '' };
+            const cls = (avg < 2 || red >= 2) ? 'red' : (red || avg < 2.7) ? 'orange' : 'green';
             const label = { red: 'Zwaar probleem', orange: 'Aandacht nodig', green: 'Op koers' }[cls];
+            const reason = cls === 'red' && red >= 2 && avg >= 2 ? `rood: ${red} zware problemen`
+                : cls === 'orange' && red && avg >= 2.7 ? 'niet groen: er is een zwaar probleem' : '';
             const parts = [];
             if (n < categories.length) parts.push(`${n} van ${categories.length} beoordeeld`);
-            if (cls === 'orange' && red && avg >= 2.7) parts.push(red === 1 ? 'niet groen: er is een zwaar probleem' : `niet groen: er zijn ${red} zware problemen`);
-            return { avg, n, red, cls, label, note: parts.join(' · ') };
+            if (reason) parts.push(reason);
+            return { avg, n, red, cls, label, note: parts.join(' · '), reason };
         }
         function getTotalStatusLabel() { return totalLevel(scores).label; }
         const CHART_COLORS = { empty: { bg: 'rgba(148,163,184,0.15)', border: '#94a3b8' }, red: { bg: 'rgba(239,68,68,0.15)', border: '#ef4444' },
@@ -1469,8 +1478,10 @@ const ocExport = (() => {
                             wrap.classList.add('visible');
                             textarea.className = `toelichting-input score-${scores[cat.id]}-focus`;
                             textarea.focus();
-                        } else {
+                        } else if (!textarea.value.trim()) {
                             wrap.classList.remove('visible');
+                        } else {
+                            textarea.className = 'toelichting-input';
                         }
                     });
                 });
@@ -1617,7 +1628,7 @@ const ocExport = (() => {
                 <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#64748b">Totaalstatus</div>
                 <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;color:${totalColor};margin:4px 0 6px">${escHtml(total)}</div>
                 <div style="font-size:13px;color:#64748b">gewogen gemiddelde ${avg ? avg.toFixed(2).replace('.', ',') : '—'} op 3 · ${scored} van ${categories.length} categorieën beoordeeld</div>
-                ${lv.cls === 'orange' && lv.red && avg >= 2.7 ? `<div style="font-size:13px;color:#b45309;margin-top:2px">Niet groen: ${lv.red === 1 ? 'er is een zwaar probleem' : `er zijn ${lv.red} zware problemen`}.</div>` : ''}
+                ${lv.reason ? `<div style="font-size:13px;color:${totalColor};margin-top:2px">${escHtml(lv.reason.charAt(0).toUpperCase() + lv.reason.slice(1))}.</div>` : ''}
                 <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
                     ${[[1, 'Zwaar probleem'], [2, 'Licht probleem'], [3, 'Op koers']].map(([v, l]) =>
                         `<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:${STATUS_COLOR[v]}"></span>${l}</div>`).join('')}
@@ -1703,10 +1714,8 @@ const ocExport = (() => {
                         document.getElementById(`toelichting-${cat.id}`).value = toelichting;
                         const wrap = document.getElementById(`toelichting-wrap-${cat.id}`);
                         const textarea = document.getElementById(`toelichting-${cat.id}`);
-                        if (s === 1 || s === 2) {
-                            wrap.classList.add('visible');
-                            textarea.className = `toelichting-input score-${s}-focus`;
-                        }
+                        wrap.classList.add('visible');
+                        if (s === 1 || s === 2) textarea.className = `toelichting-input score-${s}-focus`;
                     }
                 }
             });
