@@ -643,6 +643,7 @@
         /* Per project: tabbladen */
         .proj-tabs { display:flex; gap:0.5rem; overflow-x:auto; scrollbar-width:none; justify-content:safe center; padding:0.125rem 0.25rem 0.25rem; margin:0 0 0.75rem; }
         .proj-tabs::-webkit-scrollbar { display:none; }
+        .proj-tabs, .ptab { position:relative; }   /* het verborgen label (sr-only) blijft binnen de schuifbalk: anders wordt de pagina breder op een gsm */
         .ptab { flex-shrink:0; min-height:44px; padding:0.4375rem 0.875rem; border-radius:999px; font:inherit; font-size:0.875rem; font-weight:600; border:1px solid #e2e8f0; background:#fff; color:#475569; white-space:nowrap; display:flex; align-items:center; gap:0.375rem; cursor:pointer; }
         .ptab .dot { width:9px; height:9px; border-radius:50%; background:#cbd5e1; flex:none; }
         .ptab .dot.red { background:#ef4444; } .ptab .dot.orange { background:#f59e0b; } .ptab .dot.green { background:#10b981; }
@@ -730,6 +731,27 @@ body { min-height:100dvh; }
 .oc-bar { display:flex; align-items:center; justify-content:center; gap:0.5rem; max-width:452px; margin:0 auto 1.5rem; }
 .oc-bar .project-name-input { flex:1 1 auto; min-width:0; }
 #startBar { max-width:720px; margin:0 auto 1.25rem; }
+
+/* Wat andere tools zeggen (november 2026): een rustige regel per categorie. Geen scorekleuren; amber alleen op het icoon als iets echt aandacht vraagt. */
+.sig-bron { display:flex; gap:0.5rem; align-items:flex-start; margin:-0.25rem 0 1rem; font-size:0.8125rem; line-height:1.45; color:#475569; }
+.sig-bron svg { width:16px; height:16px; flex:none; margin-top:0.125rem; color:#047857; }
+.sig-bron b { color:#1e293b; font-weight:600; }
+.sig { display:flex; flex-wrap:wrap; align-items:center; column-gap:0.5rem; margin-top:0.5rem; padding:0.25rem 0.375rem 0.25rem 0.625rem; background:#f8fafc; border-radius:10px; }
+.sig[hidden] { display:none !important; }
+.sig-txt { flex:1 1 16rem; min-width:0; display:flex; gap:0.5rem; align-items:flex-start; margin:0; padding:0.375rem 0; font-size:0.8125rem; line-height:1.45; color:#334155; }
+.sig-txt > svg { width:16px; height:16px; flex:none; margin-top:0.125rem; color:#64748b; }
+.sig-txt > svg.let { color:#b45309; }
+.sig-txt a { color:#047857; font-weight:600; text-decoration:underline; text-decoration-color:#a7f3d0; text-decoration-thickness:2px; text-underline-offset:2px; padding:0.375rem 0; border-radius:4px; }
+.sig-txt a:hover { text-decoration-color:#047857; }
+/* de knop als rustige groene tekstknop (zoals "Open bestand"), onder de tekst uitgelijnd */
+.sig-zet { flex:none; display:inline-flex; align-items:center; gap:0.375rem; min-height:44px; margin:-0.25rem 0 0 1rem; padding:0 0.5rem; font:inherit; font-size:0.8125rem; font-weight:600; color:#047857; background:none; border:0; border-radius:8px; cursor:pointer; white-space:nowrap; }
+.sig-zet:hover { background:#ecfdf5; }
+.sig-zet svg { width:16px; height:16px; flex:none; }
+.sig-zet[aria-disabled="true"] { color:#475569; cursor:default; font-weight:500; }
+.sig-zet[aria-disabled="true"]:hover { background:none; }
+.sig-zet[aria-disabled="true"] svg { color:#047857; }
+/* de melding krijgt de breedte van haar tekst, ook op een gsm (left:50% halveerde de ruimte) */
+.oc-toast { width:max-content; }
 
 /* oc-uitleg v1 begin */
 /* "Hoe werkt dit?": één blok voor alle tools. Zonder JavaScript blijft de gewone uitklapper leesbaar.
@@ -894,6 +916,7 @@ details.explain.oc-u .oc-u-noot a:hover { text-decoration-color:var(--u-donker);
 
             <div class="card">
                 <h2 class="card-title">Beoordeling per categorie</h2>
+                <p class="sig-bron" id="sigBron" hidden></p>
                 <div class="sliders-list" id="slidersList"></div>
                 <p class="instructions">Kies per categorie een status. Tik op de naam van een categorie voor uitleg.</p>
             </div>
@@ -910,6 +933,7 @@ details.explain.oc-u .oc-u-noot a:hover { text-decoration-color:var(--u-donker);
                     <li><b>Zo komt de totaalstatus tot stand.</b> Zwaar telt als 1, Licht als 2 en Op koers als 3. De tool neemt daarvan een gewogen gemiddelde: risico's wegen het zwaarst, daarna inhoud, planning en knelpunten, dan budget en afhankelijkheden. Rood wordt het bij twee of meer zware problemen, of bij een gemiddelde onder 2. Groen alleen bij een gemiddelde vanaf 2,7 zonder één zwaar probleem. Al de rest is oranje: aandacht nodig. Wat je niet invult, telt niet mee.</li>
                     <li><b>Volg de problemen op.</b> Elk zwaar en licht probleem staat klaar als actie, met je toelichting erbij. Neem ze over in het Takenbord of in Prioriteren. In het Takenbord krijgt een zwaar probleem meteen prioriteit Hoog.</li>
                 </ul>
+                <p>Weet een andere tool al iets over hetzelfde project, dan staat dat in een korte regel onder de categorie: neem het over met <b>Zet in toelichting</b>, de score kies je altijd zelf.</p>
                 <p>Tip: met Tab ga je van categorie naar categorie, met de pijltjes kies je de status. Escape sluit de uitleg bij een categorie.</p>
                 <p>Volg de problemen op in het <a href="../kanban/">Takenbord</a> of zet ze op volgorde in <a href="../prioriteit/">Prioriteren</a>. Wil je de risico's apart bekijken? Gebruik de <a href="../risico/">Risicomatrix</a>.</p>
             </div>
@@ -946,7 +970,9 @@ details.explain.oc-u .oc-u-noot a:hover { text-decoration-color:var(--u-donker);
      ]);                                   // aanroepen na elke bewaring
      ocShare.clear('raci');                // bij "Alles wissen"
      const gekozen = await ocShare.pick({ types:['betrokkene'], self:'weerstand', title:'Doelgroepen overnemen' });
-     // geeft [] terug bij annuleren, anders de aangevinkte items (met .source en .list erbij)
+     // geeft [] terug bij annuleren, anders de aangevinkte items (met .source, .bronId en .list erbij)
+     // Afspraak: een tool geeft wat ze overnam (bronId) NIET opnieuw door, tenzij ze er een eigen oordeel aan toevoegde
+     // (een score, een eigenaar, een datum). Zo blijft de bron de baas en komt wat daar verwijderd is niet terug.
      ocShare.pick({ ..., have:['Budget goedkeuren'] })  // optioneel: wat de tool al heeft, staat uitgegrijsd ("staat er al")
      ocShare.pick({ ..., vink:false })    // niets vooraf aanvinken;  notes:false  toont geen notities (voor wie alleen namen neemt)
      window.ocHave = types => [...]       // optioneel per tool: dan telt de knop "Overnemen uit andere tools" alleen wat nieuw is
@@ -1102,7 +1128,7 @@ const ocShare = (() => {
       document.addEventListener('keydown', onKey, true);
       back.querySelector('.ocs-cancel').addEventListener('click', () => close([]));
       ok.addEventListener('click', () => close(boxes().filter(b => b.checked).map(b => {
-        const s = src[+b.dataset.s]; return { ...s.items[+b.dataset.i], source: s.tool, list: s.list };
+        const s = src[+b.dataset.s]; return { ...s.items[+b.dataset.i], source: s.tool, bronId: s.id, list: s.list };
       })));
       const first = back.querySelector('input:not(:disabled),.ocs-cancel'); first && first.focus();
     });
@@ -1332,6 +1358,7 @@ const ocExport = (() => {
             document.getElementById('vbBar').hidden = !isVoorbeeld;
             document.getElementById('nextNote').hidden = isVoorbeeld || !categories.some(c => scores[c.id] === 1 || scores[c.id] === 2);
             document.getElementById('restartRow').hidden = (state && state.projects.length > 1) ? false : (!any || isVoorbeeld);
+            if (typeof ocSignalen !== 'undefined') ocSignalen.toon();   // wat andere tools zeggen, per categorie
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────
@@ -1674,6 +1701,7 @@ const ocExport = (() => {
                             <label for="score-${cat.id}-3" class="score-3">Op koers</label>
                         </div>
                     </div>
+                    <div class="sig" id="sig-${cat.id}" hidden></div>
                     <div class="toelichting-wrap" id="toelichting-wrap-${cat.id}">
                         <textarea class="toelichting-input" id="toelichting-${cat.id}" rows="2" placeholder="Korte toelichting…" aria-label="Toelichting bij ${cat.label}"></textarea>
                     </div>
@@ -1922,15 +1950,15 @@ const ocExport = (() => {
                     const radio = document.getElementById(`score-${cat.id}-${s}`);
                     if (radio) radio.checked = true;
                     updateBadge(cat.id, s);
-
-                    const toelichting = typeof session.toelichtingen[cat.id] === 'string' ? session.toelichtingen[cat.id].slice(0, 2000) : '';
-                    if (toelichting) {
-                        document.getElementById(`toelichting-${cat.id}`).value = toelichting;
-                        const wrap = document.getElementById(`toelichting-wrap-${cat.id}`);
-                        const textarea = document.getElementById(`toelichting-${cat.id}`);
-                        wrap.classList.add('visible');
-                        if (s === 1 || s === 2) textarea.className = `toelichting-input score-${s}-focus`;
-                    }
+                }
+                // Een toelichting laadt ook zonder score (bv. een regel uit een andere tool die je er al in zette).
+                const toelichting = typeof session.toelichtingen[cat.id] === 'string' ? session.toelichtingen[cat.id].slice(0, 2000) : '';
+                if (toelichting || s === 1 || s === 2) {   // bij een probleem staat het veld open, zoals na het kiezen
+                    document.getElementById(`toelichting-${cat.id}`).value = toelichting;
+                    const wrap = document.getElementById(`toelichting-wrap-${cat.id}`);
+                    const textarea = document.getElementById(`toelichting-${cat.id}`);
+                    wrap.classList.add('visible');
+                    if (s === 1 || s === 2) textarea.className = `toelichting-input score-${s}-focus`;
                 }
             });
 
@@ -2029,6 +2057,293 @@ const ocExport = (() => {
             document.documentElement.classList.remove('oc-wacht');
         });
     </script>
+<script>
+/* ---------- Wat andere tools zeggen (november 2026) ----------
+   Per categorie een korte regel met wat de andere tools weten over HETZELFDE project, met een link naar die tool.
+   Alleen lezen: deze code schrijft nooit in de opslag van een andere tool. Voorbeelden (voorbeeld:true) tellen niet mee.
+   Kapotte of onverwachte gegevens: stil niets. De score blijft altijd de keuze van de gebruiker: hier wordt nooit een score gezet.
+   Welk project: de naam van deze radar, of anders het actieve project in de app (oc.project).
+   De lezers en rekenregels komen uit het Projectdossier (dossier/app.js): zelfde namen, risico's, mijlpalen en akkoord. */
+const ocSignalen = (() => {
+  const obj = x => !!x && typeof x === 'object' && !Array.isArray(x);
+  const str = (v, n = 2000) => typeof v === 'string' ? v.slice(0, n) : typeof v === 'number' ? String(v) : '';
+  const arr = v => Array.isArray(v) ? v : [];
+  const vol = a => arr(a).map(x => typeof x === 'string' ? x.trim() : '').filter(Boolean);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+  const okDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '') && !isNaN(new Date(s + 'T00:00:00'));
+  const isoVan = d => new Date(d.getTime() - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+  const vandaag = () => isoVan(new Date());
+  const fmtLang = s => okDate(s) ? new Date(s + 'T00:00:00').toLocaleDateString('nl-BE', { day:'numeric', month:'long', year:'numeric' }) : String(s || '');
+  const meer = (n, een, veel) => `${n} ${n === 1 ? een : veel}`;
+  const lc = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Namen vergelijken zoals het dossier: zonder hoofdletters, accenten, spaties en leestekens; alleen de eerste 50 letters en cijfers.
+  const sleutel = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '');
+  const pk = s => sleutel(s).slice(0, 50);
+  const isStd = v => window.ocStandaardNaam ? ocStandaardNaam(v) : /^((mijn|nieuwe?) )?project( \d+)?$|^naamloos$/i.test(String(v || '').trim());
+
+  const TOOL = {
+    opdracht:     { naam:'Projectopdracht',          pad:'../opdracht/',          key:'opdracht.v1' },
+    risico:       { naam:'Risicomatrix',             pad:'../risico/',            key:'risico.v1' },
+    besluit:      { naam:'Beslissingslog',           pad:'../beslissingen/',      key:'beslissingen.v1' },
+    kanban:       { naam:'Takenbord',                pad:'../kanban/',            key:'sprintflow_kanban_v5' },
+    raci:         { naam:'RACI-matrix',              pad:'../raci/',              key:'raci.v1' },
+    betrokken:    { naam:'Betrokkenenradar',         pad:'../stakeholders/',      key:'stakeholders.v1' },
+    realisme:     { naam:'Project Realisme Monitor', pad:'../project-realisme/',  key:'realisme.v1' },
+    communicatie: { naam:'Communicatieplan',         pad:'../communicatie/',      key:'communicatie.v1' },
+  };
+
+  /* Projectopdracht: opdracht.v1 = { opdrachten:[...], current }. Gewijzigd na akkoord: zelfde vakken en vergelijking als de Projectopdracht. */
+  const OP_TEKST = ['waarom', 'opleveren', 'opdrachtgever', 'projectleider', 'kernteam', 'einddatum', 'budget', 'mensen', 'knelt', 'freq', 'aanWie', 'escaleren'];
+  const OP_LIJST = ['doelen', 'binnen', 'buiten', 'akkoord', 'risicos'];
+  const OP_SEC = { naam:['name'], waarom:['waarom'], einde:['opleveren', 'doelen'], scope:['binnen', 'buiten'], wie:['opdrachtgever', 'projectleider', 'kernteam', 'akkoord'],
+    middelen:['einddatum', 'budget', 'mensen', 'knelt'], mijlpalen:['mijlpalen'], risicos:['risicos'], afspraken:['freq', 'aanWie', 'escaleren'] };
+  const OP_VELD = { name:'Naam', waarom:'Waarom', opleveren:'Wat we opleveren', doelen:'Wat er beter wordt', binnen:'Valt erbinnen', buiten:'Valt erbuiten',
+    opdrachtgever:'Opdrachtgever', projectleider:'Projectleider', kernteam:'Kernteam', akkoord:'Wie akkoord geeft', einddatum:'Einddatum', budget:'Budget',
+    mensen:'Mensen', knelt:'Wat we eerst toegeven', mijlpalen:'Mijlpalen', risicos:"Risico's", freq:'Hoe vaak we rapporteren', aanWie:'Aan wie', escaleren:'Wanneer we escaleren' };
+  function opNorm(o) {
+    const n = { name: str(o.name, 200) };
+    OP_TEKST.forEach(k => { n[k] = typeof o[k] === 'string' ? o[k] : ''; });
+    OP_LIJST.forEach(k => { n[k] = arr(o[k]).filter(x => typeof x === 'string'); });
+    n.mijlpalen = arr(o.mijlpalen).filter(obj).map(m => ({ text:String(m.text == null ? '' : m.text), date: typeof m.date === 'string' ? m.date : '' }));
+    const t = obj(o.teken) ? o.teken : {};
+    n.teken = { naam:String(t.naam || ''), datum: typeof t.datum === 'string' ? t.datum : '', kopie: obj(t.kopie) ? t.kopie : null };
+    return n;
+  }
+  function opWaarde(o, k) {
+    if (k === 'name') return String(o.name || '').trim();
+    if (k === 'mijlpalen') return o.mijlpalen.filter(m => m.text.trim() || m.date).map(m => ({ text:m.text.trim(), date:m.date }));
+    if (OP_LIJST.includes(k)) return vol(o[k]);
+    return String(o[k] || '').trim();
+  }
+  const opSectie = (o, id) => OP_SEC[id].map(k => opWaarde(o, k));
+  const opGetekend = o => !!(o.teken.naam.trim() && o.teken.datum) && o.teken.datum <= vandaag();
+  function opGewijzigd(o) {
+    if (!opGetekend(o) || !o.teken.kopie) return [];
+    return Object.keys(OP_SEC).filter(id => o.teken.kopie[id] && JSON.stringify(opSectie(o, id)) !== JSON.stringify(o.teken.kopie[id]));
+  }
+  const opVelden = o => opGewijzigd(o).flatMap(id => OP_SEC[id].filter((k, ix) => JSON.stringify(arr(o.teken.kopie[id])[ix]) !== JSON.stringify(opWaarde(o, k))));
+
+  /* Takenbord: sprintflow_kanban_v5 = { projects:[{ id, name, cards, team }], activeProjectId } */
+  const KOLOMMEN = [{ id:'backlog', naam:'Later' }, { id:'todo', naam:'Te doen' }, { id:'bezig', naam:'Bezig' }, { id:'review', naam:'Nakijken' }, { id:'klaar', naam:'Klaar' }];
+  const kbNorm = p => ({ cards: arr(p.cards).filter(obj).map(c => ({ title:str(c.title, 500).trim(), status: KOLOMMEN.some(k => k.id === c.status) ? c.status : 'backlog',
+    dueDate: okDate(c.dueDate) ? c.dueDate : '' })).filter(c => c.title) });
+  const clamp10 = v => Math.max(1, Math.min(10, Math.round(+v) || 1));
+
+  /* De lezers: ruwe inhoud van één sleutel in, lijst { name, voorbeeld, data } uit (of null als de vorm niet klopt). */
+  const LEES = {
+    opdracht: d => arr(d && d.opdrachten).filter(obj).map(o => { const n = opNorm(o); return { name:n.name, voorbeeld:o.voorbeeld === true, data:n }; }),
+    risico: d => {
+      if (!obj(d)) return null;
+      const oud = d.schaal !== 5, c = v => oud ? Math.max(1, Math.min(5, Math.ceil(Math.max(1, Math.min(10, Math.round(+v) || 1)) / 2))) : Math.max(1, Math.min(5, Math.round(+v) || 1));
+      const getal = v => v !== null && v !== '' && v !== undefined && typeof v !== 'boolean' && isFinite(+v) && +v >= 1;
+      const teSchatten = x => x.nieuw === true || x.ingeschat === false || x.status === 'nieuw' || !getal(x.probability) || !getal(x.impact);
+      const geldig = l => arr(l).filter(x => obj(x) && typeof x.name === 'string' && x.name.trim());
+      const ps = Array.isArray(d.projects) ? d.projects.filter(obj) : Array.isArray(d.items) ? [{ name:d.project, items:d.items, voorbeeld:d.voorbeeld }] : null;
+      if (!ps) return null;
+      return ps.map(p => ({ name:str(p.name, 80), voorbeeld:p.voorbeeld === true, data:{
+        items: geldig(p.items).filter(x => !teSchatten(x)).map(x => ({ kans:c(x.probability), impact:c(x.impact), maatregel:str(x.measure, 500).trim(), status:str(x.status, 20) })),
+        teSchatten: geldig(p.items).filter(teSchatten).length } }));
+    },
+    besluit: d => arr(d && d.logs).filter(obj).map(l => ({ name:str(l.name, 200), voorbeeld:l.voorbeeld === true, data:{
+      items: arr(l.items).filter(obj).map(it => ({ status:['genomen', 'herzien', 'ingetrokken'].includes(it.status) ? it.status : 'genomen',
+        acties: arr(it.actions).filter(obj).map(a => ({ text:str(a.text, 300).trim(), when:okDate(a.when) ? a.when : '', done:!!a.done })).filter(a => a.text) })) } })),
+    kanban: d => {
+      if (!obj(d)) return null;
+      const ps = Array.isArray(d.projects) && d.projects.length ? d.projects.filter(obj) : (d.cards || d.team) ? [{ name:'Mijn project', cards:d.cards }] : null;
+      if (!ps) return null;
+      return ps.map(p => ({ name:str(p.name, 200), voorbeeld:p.voorbeeld === true, data:kbNorm(p) }));
+    },
+    raci: d => arr(d && d.mats).filter(obj).map(m => ({ name:str(m.name, 200), voorbeeld:m.voorbeeld === true, data:{
+      roles: arr(m.roles).filter(obj).map(r => str(r.id, 80)).filter(Boolean),
+      tasks: arr(m.tasks).filter(obj).map(t => ({ name:str(t.name, 200).trim(), cells:obj(t.cells) ? t.cells : {} })).filter(t => t.name) } })),
+    betrokken: d => {
+      if (!obj(d) || !Array.isArray(d.items)) return null;
+      const items = d.items.filter(x => obj(x) && x.name).map(x => {
+        const oud = !('contribution' in x) && ('power' in x || 'interest' in x);
+        return { c:clamp10(oud ? x.power : x.contribution), w:clamp10(oud ? x.interest : x.willingness), todo:x.todo === true };
+      });
+      return [{ name:str(d.project, 80), voorbeeld:d.voorbeeld === true, data:{ items } }];
+    },
+    realisme: d => arr(d && d.projects).filter(x => obj(x) && typeof x.name === 'string' && x.name.trim()).map(x => {
+      const g = v => parseFloat(String(v == null ? '' : v).replace(',', '.')), o = g(x.o), m = g(x.m), p = g(x.p);
+      return { name:x.name.slice(0, 80), voorbeeld:x.voorbeeld === true, data:{ geldig: o > 0 && o <= m && m <= p } };
+    }),
+    // Communicatieplan: communicatie.v1 = één plan { name, moments:[{ date, done, msg }], voorbeeld }
+    communicatie: d => {
+      if (!obj(d) || !Array.isArray(d.moments)) return null;
+      return [{ name:str(d.name, 200), voorbeeld:d.voorbeeld === true, data:{ moments: d.moments.filter(obj).map(m => ({ date:okDate(m.date) ? m.date : '', done:!!m.done })) } }];
+    },
+  };
+  // Het item van dit project in één tool: zelfde naam, geen voorbeeld. Wat kapot is, geeft stil niets.
+  function vind(id, s) {
+    try {
+      const t = localStorage.getItem(TOOL[id].key); if (t == null) return null;
+      const lijst = LEES[id](JSON.parse(t));
+      const x = Array.isArray(lijst) ? lijst.find(i => i && !i.voorbeeld && pk(i.name) === s) : null;
+      return x ? x.data : null;
+    } catch (e) { return null; }
+  }
+  // De realistische einddatum rekent de Monitor zelf uit (met feestdagen en marge) en legt die klaar: hier niets opnieuw rekenen.
+  function realismeEinde(s) {
+    try {
+      const d = JSON.parse(localStorage.getItem('oc.share.project-realisme')); if (!obj(d)) return '';
+      const l = arr(d.lists).find(x => obj(x) && pk(x.name) === s); if (!l) return '';
+      const it = arr(l.items).find(x => obj(x) && x.type === 'kerncijfer' && x.text === 'realisme.einddatum');
+      return it && okDate(String(it.note || '')) ? String(it.note) : '';
+    } catch (e) { return ''; }
+  }
+
+  /* Welk project: de naam van deze radar, anders het actieve project in de app. Een voorbeeld of een standaardnaam: niets. */
+  function project() {
+    try {
+      if (isVoorbeeld || !state) return null;
+      const p = cur(); if (!p || p.voorbeeld) return null;
+      const eigen = (document.getElementById('projectName').value || '').trim();
+      if (eigen && !isStd(eigen)) return { naam:eigen, bron:'radar' };
+      const ap = ocProject('');
+      if (ap && !isStd(ap)) return { naam:ap, bron:'app' };
+    } catch (e) {}
+    return null;
+  }
+
+  /* De regels per categorie. Elk stuk: { tool, tekst, let }. let = vraagt echt aandacht (amber icoon). */
+  function bereken(naam) {
+    const s = pk(naam), uit = {}, nu = vandaag();
+    if (!s) return uit;
+    const zet = (cat, tool, tekst, l) => { (uit[cat] = uit[cat] || []).push({ tool, tekst, let:!!l }); };
+    const o = vind('opdracht', s), kb = vind('kanban', s);
+    const isMijlpaal = (c, m) => sleutel(c.title) === sleutel('Mijlpaal: ' + m.text) || sleutel(c.title) === sleutel(m.text);
+
+    // Planning: mijlpalen voorbij hun datum (een kaart in het Takenbord in Klaar telt als gehaald), en de einddatum.
+    const eind = o && okDate(o.einddatum) ? o.einddatum : '';
+    if (o) {
+      const laat = o.mijlpalen.filter(m => m.text.trim() && okDate(m.date) && m.date < nu
+        && !(kb && kb.cards.some(c => isMijlpaal(c, m) && c.status === 'klaar'))).length;
+      const f = []; let l = false;
+      if (laat) { f.push(`${meer(laat, 'mijlpaal ligt', 'mijlpalen liggen')} voorbij ${laat === 1 ? 'de' : 'hun'} datum`); l = true; }
+      if (eind && eind < nu) { f.push(`de einddatum (${fmtLang(eind)}) is voorbij`); l = true; }
+      else if (f.length && eind) f.push(`einddatum ${fmtLang(eind)}`);
+      if (f.length) zet('planning', 'opdracht', f.join(', '), l);
+    }
+    if (eind && vind('realisme', s) && vind('realisme', s).geldig) {
+      const r = realismeEinde(s);
+      if (r) { const w = Math.round((new Date(r + 'T00:00:00') - new Date(eind + 'T00:00:00')) / (7 * 864e5));
+        if (w > 0) zet('planning', 'realisme', `realistisch klaar op ${fmtLang(r)}, ${meer(w, 'week', 'weken')} na de einddatum in je Projectopdracht`, true); }
+    }
+    // Inhoud: de opdracht veranderde na het akkoord.
+    if (o) {
+      const vv = opVelden(o);
+      if (opGewijzigd(o).length) zet('scope', 'opdracht', `gewijzigd na het akkoord${vv.length ? ` (${vv.slice(0, 3).map(k => lc(OP_VELD[k])).join(', ')}${vv.length > 3 ? ' en meer' : ''})` : ''}`, true);
+    }
+    // Risico's: grote risico's (hoog of kritiek) zonder maatregel en nog niet onder controle, en wat nog in te schatten is.
+    const ri = vind('risico', s);
+    if (ri) {
+      const groot = ri.items.filter(x => x.kans * x.impact >= 10 && x.status !== 'klaar' && !x.maatregel).length, f = [];
+      if (groot) f.push(`${meer(groot, 'groot risico', "grote risico's")} zonder maatregel`);
+      if (ri.teSchatten) f.push(f.length ? `${ri.teSchatten} nog in te schatten` : `${meer(ri.teSchatten, 'risico', "risico's")} nog in te schatten`);
+      if (f.length) zet('risks', 'risico', f.join(', '), groot > 0);
+    }
+    // Knelpunten: taken te laat (mijlpalen tellen al bij Planning) en acties uit besluiten die te laat zijn.
+    if (kb) {
+      const n = kb.cards.filter(c => c.status !== 'klaar' && c.dueDate && c.dueDate < nu && !/^mijlpaal\s*:/i.test(c.title)
+        && !(o && o.mijlpalen.some(m => m.text.trim() && isMijlpaal(c, m)))).length;
+      if (n) zet('issues', 'kanban', `${meer(n, 'taak is', 'taken zijn')} te laat`, true);
+    }
+    const be = vind('besluit', s);
+    if (be) {
+      const n = be.items.filter(x => x.status !== 'ingetrokken').reduce((t, x) => t + x.acties.filter(a => !a.done && a.when && a.when < nu).length, 0);
+      if (n) zet('issues', 'besluit', `${meer(n, 'actie is', 'acties zijn')} te laat`, true);
+    }
+    // Betrokkenen: veel invloed, maar (nog) niet mee ("Vroeg opzoeken"), en wie nog niet ingeschat is.
+    const br = vind('betrokken', s);
+    if (br) {
+      const vroeg = br.items.filter(x => !x.todo && x.c >= 6 && x.w < 6).length, todo = br.items.filter(x => x.todo).length, f = [];
+      if (vroeg) f.push(`${meer(vroeg, 'betrokkene', 'betrokkenen')} met veel invloed ${vroeg === 1 ? 'wil' : 'willen'} nog niet mee`);
+      if (todo) f.push(`${meer(todo, 'betrokkene', 'betrokkenen')} nog in te schatten`);
+      if (f.length) zet('stakeholders', 'betrokken', f.join(', '), vroeg > 0);
+    }
+    // Mensen en middelen: taken waar nog niemand het werk voor doet.
+    const ra = vind('raci', s);
+    if (ra && ra.roles.length) {
+      const n = ra.tasks.filter(t => !ra.roles.some(r => t.cells[r] === 'R' || t.cells[r] === 'AR')).length;
+      if (n) zet('resources', 'raci', `bij ${meer(n, 'taak', 'taken')} staat nog niemand die het werk doet`, false);
+    }
+    // Communicatie: geplande momenten die voorbij zijn en niet als gedaan aangevinkt.
+    const cp = vind('communicatie', s);
+    if (cp) {
+      const n = cp.moments.filter(m => !m.done && m.date && m.date < nu).length;
+      if (n) zet('communication', 'communicatie', `${meer(n, 'moment is', 'momenten zijn')} voorbij en niet aangevinkt als gedaan`, true);
+    }
+    return uit;
+  }
+
+  const ICO = {
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+    let: '<svg class="let" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 4.2L2.6 17.5A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/></svg>',
+    zet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    bron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+  };
+  // De tekst die in de toelichting komt: dezelfde regel, zonder links.
+  const platte = stukken => stukken.map(x => `${TOOL[x.tool].naam}: ${x.tekst}.`).join(' ');
+  let laatste = {};
+
+  function toon() {
+    const lijst = document.getElementById('slidersList'); if (!lijst) return;
+    const p = project(), regels = p ? bereken(p.naam) : {};
+    laatste = regels;
+    let iets = false;
+    categories.forEach(cat => {
+      const el = document.getElementById('sig-' + cat.id); if (!el) return;
+      const st = regels[cat.id];
+      if (!st || !st.length) { if (!el.hidden) { el.hidden = true; el.innerHTML = ''; delete el.dataset.h; } return; }
+      iets = true;
+      const tekst = platte(st), ta = document.getElementById('toelichting-' + cat.id), al = !!(ta && ta.value.includes(tekst));
+      const html = `<p class="sig-txt">${st.some(x => x.let) ? ICO.let : ICO.info}<span>${st.map(x => `<a href="${TOOL[x.tool].pad}">${esc(TOOL[x.tool].naam)}</a>: ${esc(x.tekst)}.`).join(' ')}</span></p>`
+        + (al ? `<button type="button" class="sig-zet" data-sig="${cat.id}" aria-disabled="true">${ICO.ok}Staat in de toelichting</button>`
+              : `<button type="button" class="sig-zet" data-sig="${cat.id}" aria-label="Zet in toelichting bij ${esc(cat.label)}">${ICO.zet}Zet in toelichting</button>`);
+      if (el.dataset.h === html && !el.hidden) return;   // niets veranderd: niet opnieuw tekenen (de focus blijft staan)
+      const focus = el.contains(document.activeElement);
+      el.innerHTML = html; el.dataset.h = html; el.hidden = false;
+      if (focus) { const b = el.querySelector('.sig-zet'); b && b.focus({ preventScroll:true }); }
+    });
+    const bron = document.getElementById('sigBron');
+    if (bron) {
+      const h = iets ? `${ICO.bron}<span>Onder een categorie zie je wat andere tools weten over <b>${esc(p.naam)}</b> (${p.bron === 'radar' ? 'de naam van deze radar' : 'het actieve project in de app'}). De score kies je zelf.</span>` : '';
+      if (bron.dataset.h !== h) { bron.innerHTML = h; bron.dataset.h = h; }
+      bron.hidden = !iets;
+    }
+  }
+
+  // "Zet in toelichting": de regel komt onderaan de toelichting van die categorie, met Ongedaan. Nooit een score.
+  function zetIn(id) {
+    const st = laatste[id], ta = document.getElementById('toelichting-' + id), wrap = document.getElementById('toelichting-wrap-' + id);
+    if (!st || !st.length || !ta) return;
+    const tekst = platte(st);
+    if (ta.value.includes(tekst)) return;
+    const was = ta.value, wasOpen = wrap.classList.contains('visible');
+    ta.value = (was.trim() ? was.replace(/\s+$/, '') + '\n' : '') + tekst;
+    wrap.classList.add('visible');
+    saveState(); refreshBars();
+    const cat = categories.find(c => c.id === id);
+    ocToast(`In de toelichting bij ${cat ? cat.label : 'deze categorie'} gezet`, () => {
+      ta.value = was;
+      if (!wasOpen) wrap.classList.remove('visible');
+      saveState(); refreshBars();
+    });
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.sig-zet[data-sig]'); if (!b) return;
+    if (b.getAttribute('aria-disabled') === 'true') return;
+    zetIn(b.dataset.sig);
+  });
+  // Iets veranderd in een andere tool (ander tabblad, of terug naar deze pagina): opnieuw lezen.
+  window.addEventListener('storage', () => toon());
+  window.addEventListener('pageshow', () => toon());
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) toon(); });
+  return { toon, bereken };
+})();
+</script>
 <script>
 /* Soepel: de hulpbibliotheken voor Afbeelding en PDF alvast ophalen zodra iemand naar een downloadknop gaat (niet bij het laden). */
 (() => {
