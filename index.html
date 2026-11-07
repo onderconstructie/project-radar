@@ -2199,22 +2199,28 @@ const ocSignalen = (() => {
     raci: d => arr(d && d.mats).filter(obj).map(m => ({ name:str(m.name, 200), voorbeeld:m.voorbeeld === true, data:{
       roles: arr(m.roles).filter(obj).map(r => str(r.id, 80)).filter(Boolean),
       tasks: arr(m.tasks).filter(obj).map(t => ({ name:str(t.name, 200).trim(), cells:obj(t.cells) ? t.cells : {} })).filter(t => t.name) } })),
+    // Betrokkenenradar: stakeholders.v1 = { analyses:[{ name, items, voorbeeld }], huidig } (één analyse per project),
+    // of vroeger één analyse { project, items, voorbeeld }
     betrokken: d => {
-      if (!obj(d) || !Array.isArray(d.items)) return null;
-      const items = d.items.filter(x => obj(x) && x.name).map(x => {
+      if (!obj(d)) return null;
+      const ps = Array.isArray(d.analyses) ? d.analyses.filter(obj) : Array.isArray(d.items) ? [{ name:d.project, items:d.items, voorbeeld:d.voorbeeld }] : null;
+      if (!ps) return null;
+      return ps.map(p => ({ name:str(p.name, 80), voorbeeld:p.voorbeeld === true, data:{ items: arr(p.items).filter(x => obj(x) && x.name).map(x => {
         const oud = !('contribution' in x) && ('power' in x || 'interest' in x);
         return { c:clamp10(oud ? x.power : x.contribution), w:clamp10(oud ? x.interest : x.willingness), todo:x.todo === true };
-      });
-      return [{ name:str(d.project, 80), voorbeeld:d.voorbeeld === true, data:{ items } }];
+      }) } }));
     },
     realisme: d => arr(d && d.projects).filter(x => obj(x) && typeof x.name === 'string' && x.name.trim()).map(x => {
       const o = realGetal(x.o), m = realGetal(x.m), p = realGetal(x.p);
       return { name:x.name.slice(0, 80), voorbeeld:x.voorbeeld === true, data:{ geldig: o > 0 && o <= m && m <= p } };
     }),
-    // Communicatieplan: communicatie.v1 = één plan { name, moments:[{ date, done, msg }], voorbeeld }
+    // Communicatieplan: communicatie.v1 = { plannen:[{ name, moments:[{ date, done, msg }], voorbeeld }], current } (één plan per project),
+    // of vroeger één plan { name, moments, voorbeeld }
     communicatie: d => {
-      if (!obj(d) || !Array.isArray(d.moments)) return null;
-      return [{ name:str(d.name, 200), voorbeeld:d.voorbeeld === true, data:{ moments: d.moments.filter(obj).map(m => ({ date:okDate(m.date) ? m.date : '', done:!!m.done })) } }];
+      if (!obj(d)) return null;
+      const ps = Array.isArray(d.plannen) ? d.plannen.filter(obj) : Array.isArray(d.moments) ? [d] : null;
+      if (!ps) return null;
+      return ps.map(p => ({ name:str(p.name, 200), voorbeeld:p.voorbeeld === true, data:{ moments: arr(p.moments).filter(obj).map(m => ({ date:okDate(m.date) ? m.date : '', done:!!m.done })) } }));
     },
   };
   // Het item van dit project in één tool: zelfde naam, geen voorbeeld. Wat kapot is, geeft stil niets.
