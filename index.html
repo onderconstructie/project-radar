@@ -2191,7 +2191,7 @@ const ocSignalen = (() => {
       return [{ name:str(d.project, 80), voorbeeld:d.voorbeeld === true, data:{ items } }];
     },
     realisme: d => arr(d && d.projects).filter(x => obj(x) && typeof x.name === 'string' && x.name.trim()).map(x => {
-      const g = v => parseFloat(String(v == null ? '' : v).replace(',', '.')), o = g(x.o), m = g(x.m), p = g(x.p);
+      const o = realGetal(x.o), m = realGetal(x.m), p = realGetal(x.p);
       return { name:x.name.slice(0, 80), voorbeeld:x.voorbeeld === true, data:{ geldig: o > 0 && o <= m && m <= p } };
     }),
     // Communicatieplan: communicatie.v1 = één plan { name, moments:[{ date, done, msg }], voorbeeld }
@@ -2210,6 +2210,27 @@ const ocSignalen = (() => {
     } catch (e) { return null; }
   }
   // De realistische einddatum rekent de Monitor zelf uit (met feestdagen en marge) en legt die klaar: hier niets opnieuw rekenen.
+  // Een getal zoals de Project Realisme Monitor het leest: "1.000" is duizend, "2,5" is twee en een half (zelfde regels als daar)
+  function realGetal(v) {
+      const m = /^[+-]?[\d.,]+/.exec(String(v ?? '').replace(/[\s  ']/g, ''));
+      if (!m) return NaN;
+      let s = m[0];
+      const neg = s[0] === '-'; s = s.replace(/^[+-]/, '');
+      const pt = s.lastIndexOf('.'), km = s.lastIndexOf(',');
+      let dec = '';                                                       // het decimaalteken, als er een is
+      if (pt >= 0 && km >= 0) dec = pt > km ? '.' : ',';
+      else if (km >= 0) dec = (s.match(/,/g).length > 1 && /^\d{1,3}(,\d{3})+$/.test(s)) ? '' : ',';
+      else if (pt >= 0) dec = /^\d{1,3}(\.\d{3})+$/.test(s) ? '' : (s.match(/\./g).length > 1 ? 'x' : '.');
+      if (dec === 'x') return NaN;
+      const dz = dec === '.' ? ',' : dec === ',' ? '.' : (s.includes(',') ? ',' : '.');   // het andere teken scheidt duizendtallen
+      let [heel, rest] = dec ? [s.slice(0, s.lastIndexOf(dec)), s.slice(s.lastIndexOf(dec) + 1)] : [s, ''];
+      if (heel.includes(dz) && !/^\d{1,3}([.,]\d{3})+$/.test(heel)) return NaN;   // "1.00,5": geen echte duizendtallen
+      heel = heel.split(dz).join('');
+      if (dec && /[.,]/.test(rest)) return NaN;
+      if (!/^\d*$/.test(heel) || !/^\d*$/.test(rest) || (heel + rest) === '') return NaN;
+      const n = parseFloat(`${heel || '0'}.${rest || '0'}`) * (neg ? -1 : 1);
+      return Number.isFinite(n) ? n : NaN;
+  }
   function realismeEinde(s) {
     try {
       const d = JSON.parse(localStorage.getItem('oc.share.project-realisme')); if (!obj(d)) return '';
