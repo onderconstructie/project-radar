@@ -16,7 +16,6 @@
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="preload" href="/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/dm-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/lib/chart-4.4.1.umd.js" as="script">
 <style>html.oc-wacht body > .container, html.oc-wacht body > .footer { visibility:hidden; animation:oc-toon 0s 2.5s forwards; } @keyframes oc-toon { to { visibility:visible; } }
 /* Zelfde ritme als de andere tools: de titel staat op dezelfde hoogte, zodat de kop niet verspringt als je van tool wisselt */
 .oc-head .title { margin-top:calc(0.5rem + 7px) !important; }
@@ -193,6 +192,9 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         }
 
         #radarChart { width: 100%; height: 100%; }
+        #radarChart svg { display: block; width: 100%; height: 100%; overflow: visible; }
+        #radarChart .rd-vorm { transition: d 0.35s ease, fill 0.35s ease, stroke 0.35s ease; }
+        @media (prefers-reduced-motion: reduce) { #radarChart .rd-vorm { transition: none; } }
         .main-grid > * { min-width: 0; }   /* reflow: de grafiek krimpt mee tot 320 px */
 
         /* Total status */
@@ -1815,7 +1817,7 @@ window.ocProjectkiezer = function (plek, o) {
             <div class="card">
                 <h2 class="card-title">Statusoverzicht</h2>
                 <div class="radar-container">
-                    <canvas id="radarChart" role="img" aria-label="Radar: nog niets beoordeeld."></canvas>
+                    <div id="radarChart" role="img" aria-label="Radar: nog niets beoordeeld."></div>
                 </div>
                 
                 <div class="total-status status-empty" id="totalStatus" role="status" aria-live="polite" aria-atomic="true">
@@ -2399,60 +2401,36 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
         const SHORT_LABELS = { communication: ['Communi-', 'catie'], resources: ['Mensen en', 'middelen'], dependencies: ['Afhanke-', 'lijkheden'], stakeholders: ['Betrok-', 'kenen'] };
         const radarLabels = w => categories.map(c => (w && w < 420 && SHORT_LABELS[c.id]) || (c.id === 'resources' ? ['Mensen en', 'middelen'] : c.label));
 
-        // De grafiekbibliotheek laden zonder de pagina op te houden (eerder blokkeerde ze het tekenen van alles eronder).
-        let chartLib = null;
-        function loadChartLib() {
-            if (window.Chart) return Promise.resolve();
-            if (!chartLib) chartLib = new Promise((ok, fail) => {
-                const s = document.createElement('script');
-                s.src = '/lib/chart-4.4.1.umd.js'; s.onload = ok; s.onerror = () => { chartLib = null; fail(new Error('laden mislukt')); };
-                document.head.appendChild(s);
+        // De radar tekent zichzelf in SVG: geen grafiekbibliotheek meer (200 kB minder), scherp op elk scherm.
+        const PUNT_KLEUR = v => v === 1 ? '#ef4444' : v === 2 ? '#f59e0b' : v === 3 ? '#10b981' : '#94a3b8';
+        function radarSVG(vals, kleuren, o) {
+            const n = categories.length, S = o.S, cx = S / 2, cy = S / 2, R = S * o.r;
+            const hoek = i => -Math.PI / 2 + i * 2 * Math.PI / n;
+            const pt = (i, f) => [cx + Math.cos(hoek(i)) * R * f, cy + Math.sin(hoek(i)) * R * f];
+            const veelhoek = f => categories.map((_, i) => pt(i, f).map(x => x.toFixed(1)).join(',')).join(' ');
+            const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${S} ${S}" aria-hidden="true" focusable="false">`;
+            for (const f of [1 / 3, 2 / 3, 1]) s += `<polygon points="${veelhoek(f)}" fill="none" stroke="#e2e8f0" stroke-width="${o.lijn}"/>`;
+            categories.forEach((_, i) => { const [x, y] = pt(i, 1); s += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#e2e8f0" stroke-width="${o.lijn}"/>`; });
+            const d = 'M' + vals.map((v, i) => pt(i, Math.max(0, Math.min(3, v)) / 3).map(x => x.toFixed(1)).join(',')).join('L') + 'Z';
+            s += `<path class="rd-vorm" d="${d}" fill="${kleuren.bg}" stroke="${kleuren.border}" stroke-width="${o.dik}" stroke-linejoin="round"/>`;
+            vals.forEach((v, i) => { const [x, y] = pt(i, Math.max(0, Math.min(3, v)) / 3); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${o.bol}" fill="${PUNT_KLEUR(v)}" stroke="#fff" stroke-width="${o.lijn * 1.5}"><title>${esc(categories[i].label)}: ${esc(v === 0 ? 'Niet ingevuld' : getValueLabel(v))}</title></circle>`; });
+            o.labels.forEach((lb, i) => {
+                const regels = Array.isArray(lb) ? lb : [lb], [x, y] = pt(i, 1 + o.uit), c = Math.cos(hoek(i)), sn = Math.sin(hoek(i));
+                const anker = Math.abs(c) < 0.2 ? 'middle' : c > 0 ? 'start' : 'end', lh = o.fs * 1.15;
+                const y0 = y - (regels.length - 1) * lh / 2 + (sn > 0.6 ? lh * 0.5 : sn < -0.6 ? -lh * 0.3 : o.fs * 0.35);
+                s += `<text x="${x.toFixed(1)}" text-anchor="${anker}" font-family="'DM Sans', system-ui, sans-serif" font-size="${o.fs}" font-weight="${o.gewicht}" fill="#334155">`
+                    + regels.map((r, k) => `<tspan x="${x.toFixed(1)}" y="${(y0 + k * lh).toFixed(1)}">${esc(r)}</tspan>`).join('') + '</text>';
             });
-            return chartLib;
+            return s + '</svg>';
         }
-        function initChart() {
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            radarChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: radarLabels(document.getElementById('radarChart').parentNode.clientWidth),
-                    datasets: [{
-                        data: categories.map(() => 0),
-                        backgroundColor: 'rgba(148,163,184,0.15)',
-                        borderColor: '#94a3b8',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#94a3b8',
-                        pointBorderColor: '#fff',
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: innerWidth < 640 ? 1.2 : 1,
-                    layout: { padding: innerWidth < 640 ? 4 : 24 },
-                    onResize: (chart, size) => { chart.data.labels = radarLabels(size.width); },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => ctx.raw === 0 ? 'Niet ingevuld' : getValueLabel(ctx.raw)
-                            }
-                        }
-                    },
-                    scales: {
-                        r: {
-                            min: 0, max: 3,
-                            ticks: { display: false },
-                            grid: { color: '#e2e8f0' },
-                            angleLines: { color: '#e2e8f0' },
-                            pointLabels: { font: { size: 11, weight: '500' }, color: '#334155' }
-                        }
-                    }
-                }
-            });
+        let radarStand = { data: categories.map(() => 0), kleuren: { bg: 'rgba(148,163,184,0.15)', border: '#94a3b8' } };
+        function tekenRadar() {
+            const box = document.getElementById('radarChart'); if (!box) return;
+            const w = box.clientWidth || 400, smal = w < 420;
+            box.innerHTML = radarSVG(radarStand.data, radarStand.kleuren, { S:400, r: smal ? 0.3 : 0.32, uit: 0.12, fs: smal ? 13 : 12, gewicht: 500, lijn: 1, dik: 2, bol: 5, labels: radarLabels(w) });
         }
+        if ('ResizeObserver' in window) { let vorige = 0; new ResizeObserver(es => { const w = Math.round(es[0].contentRect.width); if (Math.abs(w - vorige) > 8) { vorige = w; tekenRadar(); } }).observe(document.querySelector('.radar-container')); }
 
         /* ---------- Automatische opslag (naast de sessiebestanden) ---------- */
         /* projectradar.v1 = { version:2, projects:[{ id, name, scores, toelichtingen, voorbeeld? }], current }
@@ -2636,18 +2614,8 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
             const lv = totalLevel(scores);
             const colors = CHART_COLORS[lv.cls];
 
-            if (radarChart) {
-            radarChart.data.datasets[0].data = data;
-            radarChart.data.datasets[0].backgroundColor = colors.bg;
-            radarChart.data.datasets[0].borderColor = colors.border;
-            radarChart.data.datasets[0].pointBackgroundColor = data.map(d => {
-                if (d === 0) return '#94a3b8';
-                if (d === 1) return '#ef4444';
-                if (d === 2) return '#f59e0b';
-                return '#10b981';
-            });
-            radarChart.update();
-            }
+            radarStand = { data, kleuren: colors };
+            tekenRadar();
 
             const filled = data.some(v => v > 0);
             refreshBars();
@@ -2801,41 +2769,20 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
             return ['project-radar', slug, date].filter(Boolean).join('-');
         }
 
-        // Radar voor de export: een aparte grafiek op vaste grootte en driedubbele resolutie, met grotere labels.
-        function radarImage() {
-            const S = 520, d = radarChart.data.datasets[0];
-            const holder = document.createElement('div');
-            holder.style.cssText = `position:fixed;left:-30000px;top:0;width:${S}px;height:${S}px;`;
-            const canvas = document.createElement('canvas');
-            canvas.style.cssText = `width:${S}px;height:${S}px;`;
-            holder.appendChild(canvas); document.body.appendChild(holder);
-            const tmp = new Chart(canvas.getContext('2d'), {
-                type: 'radar',
-                data: { labels: categories.map(c => c.id === 'resources' ? ['Mensen en', 'middelen'] : c.label),
-                    datasets: [{ data: [...d.data], backgroundColor: d.backgroundColor, borderColor: d.borderColor, borderWidth: 2.5,
-                        pointBackgroundColor: d.pointBackgroundColor, pointBorderColor: '#fff', pointBorderWidth: 1.5, pointRadius: 6 }] },
-                options: { responsive: false, animation: false, devicePixelRatio: 3, layout: { padding: 6 },
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                    scales: { r: { min: 0, max: 3, ticks: { display: false }, grid: { color: '#e2e8f0' }, angleLines: { color: '#e2e8f0' },
-                        pointLabels: { font: { size: 15, weight: '600', family: "'DM Sans', system-ui, sans-serif" }, color: '#334155' } } } }
+        // Radar voor de export: dezelfde SVG op vaste grootte, met grotere labels, omgezet naar een scherpe afbeelding (3x).
+        let radarExport = null;
+        const EXPORT_OPT = () => ({ S:520, r:0.29, uit:0.1, fs:15, gewicht:600, lijn:1.2, dik:2.5, bol:6, labels: categories.map(c => c.id === 'dependencies' ? ['Afhanke-', 'lijkheden'] : c.id === 'resources' ? ['Mensen en', 'middelen'] : c.label) });   // lange namen over twee regels: zo past alles binnen de afbeelding
+        function radarPng() {
+            const svg = radarSVG(radarStand.data, radarStand.kleuren, EXPORT_OPT()), S = 520;
+            return new Promise(ok => {
+                const img = new Image();
+                img.onload = () => { const k = 3, cv = document.createElement('canvas'); cv.width = S * k; cv.height = S * k; const ctx = cv.getContext('2d'); ctx.scale(k, k); ctx.drawImage(img, 0, 0, S, S); ok({ url: cv.toDataURL('image/png'), ratio: 1 }); };
+                img.onerror = () => ok({ url: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg), ratio: 1 });
+                img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
             });
-            const src = document.createElement('canvas'); src.width = canvas.width; src.height = canvas.height;
-            src.getContext('2d').drawImage(canvas, 0, 0);
-            tmp.destroy(); holder.remove();
-            const ctx = src.getContext('2d'), { width: w, height: h } = src;
-            const px = ctx.getImageData(0, 0, w, h).data;
-            let x0 = w, y0 = h, x1 = 0, y1 = 0;
-            for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
-                if (px[(y * w + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-            }
-            if (x1 <= x0 || y1 <= y0) return src.toDataURL('image/png');
-            const pad = 12 * 3, cw = x1 - x0 + pad * 2, ch = y1 - y0 + pad * 2;
-            const out = document.createElement('canvas'); out.width = cw; out.height = ch;
-            out.getContext('2d').drawImage(src, x0 - pad, y0 - pad, cw, ch, 0, 0, cw, ch);
-            return { url: out.toDataURL('image/png'), ratio: cw / ch };
         }
-
-        async function ensureChart() { if (!radarChart) { await loadChartLib(); if (!radarChart) { initChart(); updateChart(); } } }
+        function radarImage() { return radarExport || { url: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(radarSVG(radarStand.data, radarStand.kleuren, EXPORT_OPT())), ratio: 1 }; }
+        async function ensureChart() { try { await document.fonts.ready; } catch (e) {} radarExport = await radarPng(); }
         function buildExport() {
             const name = projNaam.trim() || 'Project Radar';
             const lv = totalLevel(scores), avg = lv.avg;
@@ -2976,10 +2923,8 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
                 hernoem: n => { projNaam = n.slice(0, 200); saveState(); },
                 verwijder: () => deleteProject()
             });
-            loadChartLib().then(() => {
-                Chart.defaults.font.family = "'DM Sans', system-ui, -apple-system, sans-serif";
-                initChart(); updateChart();
-            }).catch(() => {});
+            radarStand = { data: categories.map(c => scores[c.id]), kleuren: CHART_COLORS[totalLevel(scores).cls] };
+            tekenRadar();
             refreshBars();
             // projectnaam en toelichtingen bewaren terwijl je typt
             document.addEventListener('input', e => {
