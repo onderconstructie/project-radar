@@ -3,6 +3,20 @@
 <head>
     <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- oc-delen -->
+<link rel="canonical" href="https://onderconstructie.app/project-radar/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Onder Constructie">
+<meta property="og:locale" content="nl_BE">
+<meta property="og:title" content="Project Radar · Onder Constructie">
+<meta property="og:description" content="Visualiseer projectstatus met een radar. Scoor categorieën, zie de totaalstatus.">
+<meta property="og:url" content="https://onderconstructie.app/project-radar/">
+<meta property="og:image" content="https://onderconstructie.app/og/project-radar.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Project Radar. Hoe staat je project ervoor, in één beeld">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /oc-delen -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
     <title>Project Radar – Onder Constructie</title>
@@ -175,7 +189,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         }
 
         .card-title {
-            font-size: 0.6875rem;
+            font-size:0.8125rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -213,7 +227,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         .total-status.status-empty { background: var(--slate-50); border: 1.5px solid var(--slate-200); }
 
         .total-label {
-            font-size: 0.75rem;
+            font-size:0.8125rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
@@ -242,11 +256,11 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
             border-top: 1px solid var(--slate-100);
         }
 
-        .legend-rule { font-size: 0.75rem; color: var(--slate-500); text-align: center; line-height: 1.5; margin: 0.75rem auto 0; max-width: 34rem; }
+        .legend-rule { font-size:0.8125rem; color: var(--slate-500); text-align: center; line-height: 1.5; margin: 0.75rem auto 0; max-width: 34rem; }
         .next-note { font-size: 0.8125rem; color: #047857; background: #ecfdf5; border: 1px solid #d1fae5; border-radius: 10px; padding: 0.625rem 0.875rem; margin: 0.75rem 0 0; line-height: 1.45; text-align: center; }
         .next-note[hidden] { display: none; }
         .next-note a { color: #047857; font-weight: 600; text-underline-offset: 2px; }
-        .legend-item { display: flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; color: var(--slate-500); }
+        .legend-item { display: flex; align-items: center; gap: 0.375rem; font-size:0.8125rem; color: var(--slate-500); }
 
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
         .legend-dot.red { background: var(--red-500); }
@@ -261,7 +275,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         }
 
         .download-label {
-            font-size: 0.6875rem;
+            font-size:0.8125rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -359,7 +373,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         .slider-label { font-size: 0.8125rem; font-weight: 500; color: var(--slate-700); cursor: help; }
 
         .slider-value-badge {
-            font-size: 0.6875rem;
+            font-size:0.8125rem;
             font-weight: 600;
             padding: 0.1875rem 0.625rem;
             border-radius: 9999px;
@@ -389,7 +403,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
             display: block;
             padding: 0.5rem;
             text-align: center;
-            font-size: 0.75rem;
+            font-size:0.8125rem;
             font-weight: 500;
             color: var(--slate-500);
             background: var(--slate-50);
@@ -462,7 +476,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
             z-index: 100;
             background: var(--slate-800);
             color: var(--white);
-            font-size: 0.75rem;
+            font-size:0.8125rem;
             padding: 0.625rem 0.875rem;
             border-radius: var(--radius-sm);
             max-width: 280px;
@@ -488,7 +502,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         }
 
         .reset-label {
-            font-size: 0.6875rem;
+            font-size:0.8125rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -529,7 +543,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         @media (max-width: 640px) {
             .container { padding: 1rem 1.25rem; }
             .legend { flex-wrap: wrap; gap: 0.75rem; }
-            .score-option label { font-size: 0.6875rem; padding: 0.375rem 0.25rem; }
+            .score-option label { font-size:0.8125rem; padding: 0.375rem 0.25rem; }
             .download-buttons, .session-buttons { flex-direction: column; }
             .download-buttons .btn, .session-buttons .btn { width: 100%; }
             .btn-reset { max-width: 100%; }
@@ -661,7 +675,7 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
         .ptab .dot.red { background:#ef4444; } .ptab .dot.orange { background:#f59e0b; } .ptab .dot.green { background:#10b981; }
         .ptab.active { background:#1e293b; border-color:#1e293b; color:#fff; }
         .ptab.add { color:#047857; border-style:dashed; }
-        .ptab .vb-tag { font-size:0.6875rem; font-weight:600; padding:0 0.375rem; border-radius:999px; background:#fef3c7; color:#92400e; }
+        .ptab .vb-tag { font-size:0.8125rem; font-weight:600; padding:0 0.375rem; border-radius:999px; background:#fef3c7; color:#92400e; }
         .btn:focus-visible, .btn-ghost:focus-visible { outline:2px solid #047857 !important; outline-offset:2px; box-shadow:0 0 0 4px #d1fae5; }
         .project-name-input:focus-visible { outline:2px solid #047857 !important; outline-offset:2px; }
         [hidden] { display:none !important; }
@@ -688,12 +702,12 @@ body { min-height:100dvh; }
         .ocb-txt { display:flex; flex-direction:column; min-width:0; }
         .ocb-t { font-size:0.9375rem; font-weight:600; line-height:1.3; }
         .ocb-s { font-size:0.8125rem; font-weight:400; color:#64748b; line-height:1.35; margin-top:1px; }
-        .ocb-note { margin:0.5rem 0 0; font-size:0.75rem; line-height:1.4; color:#64748b; text-align:center; }
+        .ocb-note { margin:0.5rem 0 0; font-size:0.8125rem; line-height:1.4; color:#64748b; text-align:center; }
 </style>
 <style>
 /* UX-audit (nov 2026) */
-.card-title, .download-label, .slider-value-badge { font-size:0.75rem; }
-@media (max-width:520px) { .score-option label { font-size:0.75rem; } }
+.card-title, .download-label, .slider-value-badge { font-size:0.8125rem; }
+@media (max-width:520px) { .score-option label { font-size:0.8125rem; } }
 
 /* ---------- Eenheid (november 2026): één kop, één ⋮-menu, één startscherm en één melding, zoals in de referentietools ---------- */
 .oc-head { padding:1.5rem 1.25rem 1.75rem; }
@@ -797,7 +811,7 @@ details.explain.oc-u[open] .oc-u-pijl { transform:rotate(180deg); background:var
 
 /* op brede schermen: de stappen als kleine route, die plaats maakt voor de echte stappen bij openen */
 details.explain.oc-u .oc-u-route { display:none; align-items:center; flex-shrink:0; margin-right:0.75rem; transition:opacity 0.25s, visibility 0.25s; }
-details.explain.oc-u .oc-u-route i { position:relative; display:flex; align-items:center; justify-content:center; width:26px; height:26px; margin-left:16px; border-radius:50%; border:1.5px solid var(--u-licht); background:#ffffff; color:var(--u-donker); font-style:normal; font-size:0.75rem; font-weight:700; line-height:1; font-variant-numeric:tabular-nums; transition:border-color 0.2s, background-color 0.2s; }
+details.explain.oc-u .oc-u-route i { position:relative; display:flex; align-items:center; justify-content:center; width:26px; height:26px; margin-left:16px; border-radius:50%; border:1.5px solid var(--u-licht); background:#ffffff; color:var(--u-donker); font-style:normal; font-size:0.8125rem; font-weight:700; line-height:1; font-variant-numeric:tabular-nums; transition:border-color 0.2s, background-color 0.2s; }
 details.explain.oc-u .oc-u-route i:first-child { margin-left:0; }
 details.explain.oc-u .oc-u-route i + i::before { content:''; position:absolute; right:calc(100% + 1.5px); top:calc(50% - 0.75px); width:16px; height:1.5px; background:var(--u-licht); }
 details.explain.oc-u > summary:hover .oc-u-route i { border-color:var(--u-groen); }
@@ -1594,13 +1608,13 @@ header[data-oc-kop][data-stand="compact"]::before { content:""; order:-1; flex:n
 .oc-pk-knop:focus-visible, .oc-pk-item:focus-visible { outline:2px solid #047857; outline-offset:2px; }
 .oc-pk-ico { width:18px; height:18px; flex:none; color:#64748b; }
 .oc-pk-naam { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.oc-pk-vb { flex:none; font-size:0.75rem; font-weight:600; color:#92400e; background:#fef3c7; border-radius:999px; padding:0.125rem 0.5rem; }
-.oc-pk-tel { flex:none; min-width:22px; height:22px; padding:0 0.375rem; border-radius:999px; background:#f1f5f9; color:#475569; font-size:0.75rem; font-weight:700; display:inline-grid; place-items:center; }
+.oc-pk-vb { flex:none; font-size:0.8125rem; font-weight:600; color:#92400e; background:#fef3c7; border-radius:999px; padding:0.125rem 0.5rem; }
+.oc-pk-tel { flex:none; min-width:22px; height:22px; padding:0 0.375rem; border-radius:999px; background:#f1f5f9; color:#475569; font-size:0.8125rem; font-weight:700; display:inline-grid; place-items:center; }
 .oc-pk-pijl { width:16px; height:16px; flex:none; color:#64748b; transition:transform .15s ease; }
 .oc-pk-knop[aria-expanded="true"] .oc-pk-pijl { transform:rotate(180deg); }
 .oc-pk-menu { position:absolute; left:0; top:calc(100% + 6px); z-index:160; width:max-content; min-width:260px; max-width:min(360px, calc(100vw - 2rem)); max-height:min(70vh, 480px); overflow:auto; overscroll-behavior:contain; background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; box-shadow:0 14px 36px rgba(15,23,42,0.16); padding:0.375rem; text-align:left; }
 .oc-pk-menu[hidden] { display:none; }
-.oc-pk-h { margin:0; padding:0.5rem 0.75rem 0.375rem; font-size:0.75rem; font-weight:600; color:#64748b; letter-spacing:0.02em; }
+.oc-pk-h { margin:0; padding:0.5rem 0.75rem 0.375rem; font-size:0.8125rem; font-weight:600; color:#64748b; letter-spacing:0.02em; }
 .oc-pk-item { display:flex; align-items:center; gap:0.625rem; width:100%; min-height:44px; padding:0.375rem 0.75rem; border:0; border-radius:10px; background:none; color:#1e293b; font:inherit; font-size:0.9375rem; text-align:left; cursor:pointer; }
 @media (hover:hover) { .oc-pk-item:hover { background:#f1f5f9; } }
 .oc-pk-item svg { width:18px; height:18px; flex:none; color:#64748b; }
@@ -2005,14 +2019,14 @@ const ocShare = (() => {
       .ocs-src{margin-top:.875rem}
       .ocs-src-head{display:flex;flex-wrap:wrap;align-items:center;column-gap:.5rem;padding:.375rem 0}
       .ocs-src-head b{font-size:.9375rem}
-      .ocs-src-head span{font-size:.75rem;color:#64748b;flex:1 1 8rem}
+      .ocs-src-head span{font-size:.8125rem;color:#64748b;flex:1 1 8rem}
       .ocs-all{margin-left:auto;font:inherit;font-size:.8125rem;color:#047857;background:none;border:0;cursor:pointer;padding:.25rem .5rem;min-height:44px;min-width:44px;border-radius:6px}
       .ocs-all:hover{background:#d1fae5}
       .ocs-item{display:flex;align-items:flex-start;gap:.625rem;padding:.625rem .25rem;min-height:44px;box-sizing:border-box;border-top:1px solid #f1f5f9;cursor:pointer;font-size:.9375rem;line-height:1.4;overflow-wrap:anywhere;min-width:0}
-      .ocs-item.al{cursor:default;color:#64748b}.ocs-item.al em{font-style:normal;font-size:.75rem;font-weight:600;color:#047857;margin-left:.375rem;white-space:nowrap}
+      .ocs-item.al{cursor:default;color:#64748b}.ocs-item.al em{font-style:normal;font-size:.8125rem;font-weight:600;color:#047857;margin-left:.375rem;white-space:nowrap}
       .ocs-src-head b,.ocs-src-head span{overflow-wrap:break-word;min-width:0}.ocs-src-head b{flex:0 1 auto;min-width:auto;max-width:100%}.ocs-note{margin:.25rem 0 .5rem;padding:.5rem .75rem;border-radius:10px;background:#f8fafc;color:#475569;font-size:.875rem;line-height:1.45}
       .ocs-item input{width:18px;height:18px;margin-top:.125rem;accent-color:#10b981;flex:none}
-      .ocs-item small{display:block;font-size:.75rem;color:#64748b}
+      .ocs-item small{display:block;font-size:.8125rem;color:#64748b}
       .ocs-empty{padding:1.5rem .25rem;color:#64748b;font-size:.9375rem;line-height:1.5}
       .ocs-foot{display:flex;align-items:center;gap:.5rem;justify-content:flex-end;padding:.875rem 1.25rem calc(.875rem + env(safe-area-inset-bottom,0px));border-top:1px solid #e2e8f0}
       .ocs-btn{font:inherit;font-size:.9375rem;font-weight:600;padding:.625rem 1rem;min-height:44px;border-radius:10px;border:0;cursor:pointer}
@@ -2126,7 +2140,7 @@ const ocShare = (() => {
 const ocExport = (() => {
   const LIBS = {
     h2c: '/lib/html2canvas-1.4.1.min.js',
-    pdf: '/lib/jspdf-2.5.1.umd.min.js'
+    pdf: '/lib/jspdf-4.2.1.umd.min.js'
   };
   const A4 = { w: 210, h: 297 }, MARGIN = 10;   // mm
   // Grenzen van een canvas: iPad en iPhone ongeveer 16 miljoen pixels; Chrome en Edge tot 65.535 px hoog of breed; andere browsers 32.767 px.
@@ -3590,7 +3604,7 @@ const ocSignalen = (() => {
   let warm = false;
   const go = () => {
     warm = true;
-    ['/lib/html2canvas-1.4.1.min.js', '/lib/jspdf-2.5.1.umd.min.js'].forEach(h => {
+    ['/lib/html2canvas-1.4.1.min.js', '/lib/jspdf-4.2.1.umd.min.js'].forEach(h => {
       const l = document.createElement('link');
       if (l.relList && l.relList.supports && l.relList.supports('prefetch')) { l.rel = 'prefetch'; l.as = 'script'; l.href = h; document.head.appendChild(l); }
       else try { fetch(h).catch(() => {}); } catch (e) {}
