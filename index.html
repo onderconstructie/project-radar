@@ -3089,7 +3089,7 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
 
         function applySession(session, quiet) {
             if (!session || typeof session.scores !== 'object' || typeof session.toelichtingen !== 'object' || !session.scores || !session.toelichtingen) {
-                showToast('Ongeldig sessiebestand', 'error');
+                showToast('Dit bestand kan de tool niet lezen', 'error');
                 return;
             }
 
