@@ -256,8 +256,8 @@ input::placeholder, textarea::placeholder { color:#64748b; opacity:1; }
             border-top: 1px solid var(--slate-100);
         }
 
-        .legend-rule { font-size:0.8125rem; color: var(--slate-500); text-align: center; line-height: 1.5; margin: 0.75rem auto 0; max-width: 34rem; }
-        .next-note { font-size: 0.8125rem; color: #047857; background: #ecfdf5; border: 1px solid #d1fae5; border-radius: 10px; padding: 0.625rem 0.875rem; margin: 0.75rem 0 0; line-height: 1.45; text-align: center; }
+        .legend-rule { font-size:0.8125rem; color: var(--slate-500); text-align: left; line-height: 1.5; margin: 0.75rem 0 0; }
+        .next-note { font-size: 0.8125rem; color: #047857; background: #ecfdf5; border: 1px solid #d1fae5; border-radius: 10px; padding: 0.625rem 0.875rem; margin: 0.75rem 0 0; line-height: 1.45; text-align: left; }
         .next-note[hidden] { display: none; }
         .next-note a { color: #047857; font-weight: 600; text-underline-offset: 2px; }
         .legend-item { display: flex; align-items: center; gap: 0.375rem; font-size:0.8125rem; color: var(--slate-500); }
@@ -1868,7 +1868,7 @@ window.ocProjectkiezer = function (plek, o) {
                     <div class="legend-item"><span class="legend-dot orange"></span><span>Licht probleem</span></div>
                     <div class="legend-item"><span class="legend-dot green"></span><span>Op koers</span></div>
                 </div>
-                <p class="legend-rule">De totaalstatus is een gewogen gemiddelde: risico's, inhoud, planning en knelpunten wegen iets zwaarder. Eén zwaar probleem maakt het nooit groen, twee maken het rood.</p>
+                <p class="legend-rule">Eén zwaar probleem maakt het totaal nooit groen, twee maken het rood. Is Inhoud zwaar, dan is het meteen rood. Een kleur komt er vanaf vijf beoordeelde categorieën.</p>
                 <p class="next-note" id="nextNote" hidden>De problemen staan klaar als actie. Neem ze over in <a href="../kanban/?van=project-radar">Takenbord</a> of <a href="../prioriteit/">Prioriteren</a> om ze op te volgen.</p>
 
             </div>
@@ -1889,7 +1889,7 @@ window.ocProjectkiezer = function (plek, o) {
                 <ul>
                     <li><b>Beoordeel elke categorie.</b> Kies Zwaar, Licht of Op koers. Tik op de naam van een categorie om te lezen wat elke keuze betekent. Bij een probleem schrijf je kort wat er aan de hand is.</li>
                     <li><b>Lees de radar.</b> Hoe verder een punt naar buiten staat, hoe beter het loopt. Een deuk naar binnen toont meteen waar het knelt.</li>
-                    <li><b>Zo komt de totaalstatus tot stand.</b> Zwaar telt als 1, Licht als 2 en Op koers als 3. De tool neemt daarvan een gewogen gemiddelde: risico's wegen het zwaarst, daarna inhoud, planning en knelpunten, dan budget en afhankelijkheden. Rood wordt het bij twee of meer zware problemen, of bij een gemiddelde onder 2. Groen alleen bij een gemiddelde vanaf 2,7 zonder één zwaar probleem. Al de rest is oranje: aandacht nodig. Wat je niet invult, telt niet mee.</li>
+                    <li><b>Zo komt de totaalstatus tot stand.</b> Zwaar telt als 1, Licht als 2 en Op koers als 3. De tool neemt daarvan het gemiddelde. Rood wordt het als Inhoud zwaar is, bij twee of meer zware problemen, of bij een gemiddelde onder 2. Groen alleen bij een gemiddelde vanaf 2,7 zonder één zwaar probleem. Al de rest is oranje: aandacht nodig. Inhoud weegt het zwaarst omdat onduidelijke of wijzigende doelen en eisen in onderzoek de meest genoemde oorzaak van mislukte projecten zijn. Een zwaar probleem bij Afhankelijkheden telt voor het totaal als licht: dat wordt het minst genoemd. Wat je niet invult, telt niet mee, en een kleur komt er pas vanaf vijf beoordeelde categorieën.</li>
                     <li><b>Volg de problemen op.</b> Elk zwaar en licht probleem staat klaar als actie, met je toelichting erbij. Neem ze over in het Takenbord of in Prioriteren. In het Takenbord krijgt een zwaar probleem meteen prioriteit Hoog.</li>
                 </ul>
                 <p>Weet een andere tool al iets over hetzelfde project, dan staat dat in korte regels onder de categorie, hooguit twee: eerst wat aandacht vraagt. Neem alles over met <b>Zet in toelichting</b>. Is de regel hard, bijvoorbeeld twee mijlpalen te laat, dan staat er een knop <b>Voorstel: Licht</b> of <b>Voorstel: Zwaar</b>. Dat geldt pas als je erop tikt. "Op koers" stelt hij nooit voor: de score kies je altijd zelf. De radar leest de Projectopdracht, Tijdlijn, Project Realisme Monitor, Meetplan, Gap-analyse, Veranderprofiel, Risicomatrix, Takenbord, Beslissingslog, Retro, RACI-matrix, Veranderklimaat, Betrokkenenradar, Sponsorschap, Impactanalyse en het Communicatieplan.</p>
@@ -2296,25 +2296,25 @@ const ocExport = (() => {
 })();
 
         const categories = [
-            { id: 'scope', label: 'Inhoud', weight: 1.2, explanations: {
+            { id: 'scope', label: 'Inhoud', explanations: {
                 0: 'Inhoud: nog niet beoordeeld',
                 1: 'Inhoud: grote wijzigingen of onduidelijkheid over wat er opgeleverd moet worden. Dreigt uit de hand te lopen.',
                 2: 'Inhoud: kleine wijzigingen of aandachtspunten. Beheersbaar, maar blijf het volgen.',
                 3: 'Inhoud: helder en stabiel. Iedereen weet wat er opgeleverd wordt.'
             }},
-            { id: 'planning', label: 'Planning', weight: 1.2, explanations: {
+            { id: 'planning', label: 'Planning', explanations: {
                 0: 'Planning: nog niet beoordeeld',
                 1: 'Planning: flinke vertraging. Belangrijke mijlpalen of de einddatum komen in gevaar.',
                 2: 'Planning: lichte vertraging of druk op de einddata. Extra aandacht nodig.',
                 3: 'Planning: op schema. De mijlpalen worden gehaald.'
             }},
-            { id: 'budget', label: 'Budget', weight: 1.1, explanations: {
+            { id: 'budget', label: 'Budget', explanations: {
                 0: 'Budget: nog niet beoordeeld',
                 1: 'Budget: flinke overschrijding (meer dan 10%) of te weinig middelen. Hogerop aankaarten.',
                 2: 'Budget: lichte druk of afwijking. Bijsturen kan nog, maar volg het op.',
                 3: 'Budget: binnen het budget. De kosten zijn onder controle en voorspelbaar.'
             }},
-            { id: 'communication', label: 'Communicatie', weight: 1.0, explanations: {
+            { id: 'communication', label: 'Communicatie', explanations: {
                 0: 'Communicatie: nog niet beoordeeld',
                 1: 'Communicatie: ernstige misverstanden of te weinig informatie. Betrokkenen zijn niet op de hoogte.',
                 2: 'Communicatie: enkele gaten in de informatie. Communiceer vaker of duidelijker.',
@@ -2326,25 +2326,25 @@ const ocExport = (() => {
                 2: "Risico's: bekende risico's, de maatregelen lopen. Blijf alert.",
                 3: "Risico's: in kaart gebracht en onder controle. Geen directe bedreigingen."
             }},
-            { id: 'issues', label: 'Knelpunten', weight: 1.2, explanations: {
+            { id: 'issues', label: 'Knelpunten', explanations: {
                 0: 'Knelpunten: nog niet beoordeeld',
                 1: 'Knelpunten: ernstige blokkades houden het werk tegen. Hogerop aankaarten.',
                 2: 'Knelpunten: open knelpunten die aandacht vragen. Beperkte impact, maar ze moeten opgelost worden.',
                 3: 'Knelpunten: niets blokkeert. Knelpunten worden tijdig opgelost.'
             }},
-            { id: 'resources', label: 'Mensen en middelen', weight: 1.0, explanations: {
+            { id: 'resources', label: 'Mensen en middelen', explanations: {
                 0: 'Mensen en middelen: nog niet beoordeeld',
                 1: 'Mensen en middelen: ernstig tekort aan capaciteit of uitval van sleutelfiguren.',
                 2: 'Mensen en middelen: krapte in bezetting of kennis. Tijdelijke oplossingen nodig.',
                 3: 'Mensen en middelen: het team is volledig en bekwaam. Genoeg capaciteit.'
             }},
-            { id: 'dependencies', label: 'Afhankelijkheden', weight: 1.1, explanations: {
+            { id: 'dependencies', label: 'Afhankelijkheden', explanations: {
                 0: 'Afhankelijkheden: nog niet beoordeeld',
                 1: 'Afhankelijkheden: een belangrijke externe levering komt in gevaar. Dreigt te blokkeren.',
                 2: 'Afhankelijkheden: externe leveringen staan onder druk. Volg ze actief op.',
                 3: 'Afhankelijkheden: alle externe leveringen liggen op schema.'
             }},
-            { id: 'stakeholders', label: 'Betrokkenen', weight: 1.0, explanations: {
+            { id: 'stakeholders', label: 'Betrokkenen', explanations: {
                 0: 'Betrokkenen: nog niet beoordeeld',
                 1: 'Betrokkenen: conflicten of weerstand. De steun voor het project staat onder druk.',
                 2: 'Betrokkenen: enkele zorgen. Verwachtingen bijsturen.',
@@ -2393,29 +2393,26 @@ const ocExport = (() => {
             return 'Op koers';
         }
 
-        function calculateWeightedAverage() {
-            let totalWeight = 0, weightedSum = 0;
-            categories.forEach(c => {
-                if (scores[c.id] > 0) {
-                    weightedSum += scores[c.id] * c.weight;
-                    totalWeight += c.weight;
-                }
-            });
-            return totalWeight > 0 ? weightedSum / totalWeight : 0;
-        }
-
-        /* Totaalstatus: één regel voor label en kleur.
-           Rood: twee of meer zware problemen, of een gewogen gemiddelde onder 2.
-           Groen: gemiddelde vanaf 2,7 en geen enkel zwaar probleem. Al de rest: aandacht nodig.
-           Eén zwaar probleem maakt het totaal dus nooit groen, twee maken het rood. */
+        /* Totaalstatus: één regel voor label en kleur. Drie lagen in plaats van gewichten met decimalen.
+           Waarom lagen: in de PMI Pulse of the Profession 2018 (4.455 projectmensen, hoofdoorzaken van mislukte projecten) gaan de vier
+           grootste oorzaken over doel en eisen (Inhoud), staat afhankelijkheid tussen taken helemaal achteraan, en ligt de rest dicht bij elkaar.
+           - Minder dan MIN_BEOORDEELD categorieën beoordeeld: nog geen kleur.
+           - Rood: Inhoud is zwaar, of twee of meer zware problemen, of een gemiddelde onder 2.
+           - Een zwaar probleem bij Afhankelijkheden telt voor het totaal als licht.
+           - Groen: gemiddelde vanaf 2,7 en geen enkel zwaar probleem. Al de rest: aandacht nodig.
+           Het Projectdossier (dossier/index.html) rekent met dezelfde regel: pas beide samen aan. */
+        const MIN_BEOORDEELD = 5, KERN = 'scope', LICHTER = 'dependencies';
         function totalLevel(sc) {
-            let tw = 0, ws = 0, n = 0, red = 0;
-            categories.forEach(c => { const v = sc[c.id]; if (v > 0) { ws += v * c.weight; tw += c.weight; n++; if (v === 1) red++; } });
-            const avg = tw ? ws / tw : 0;
-            if (!avg) return { avg, n, red, cls: 'empty', label: 'Nog niet', note: '', reason: '' };
-            const cls = (avg < 2 || red >= 2) ? 'red' : (red || avg < 2.7) ? 'orange' : 'green';
+            let som = 0, n = 0, red = 0;
+            categories.forEach(c => { let v = sc[c.id]; if (v > 0) { if (v === 1 && c.id === LICHTER) v = 2; som += v; n++; if (v === 1) red++; } });
+            const avg = n ? som / n : 0;
+            if (!n) return { avg, n, red, cls: 'empty', label: 'Nog niet', note: '', reason: '' };
+            if (n < MIN_BEOORDEELD) return { avg, n, red, cls: 'empty', label: 'Nog te weinig beoordeeld', note: `${n} van ${categories.length} beoordeeld · een kleur vanaf ${MIN_BEOORDEELD}`, reason: '' };
+            const kern = sc[KERN] === 1;
+            const cls = (kern || avg < 2 || red >= 2) ? 'red' : (red || avg < 2.7) ? 'orange' : 'green';
             const label = { red: 'Zwaar probleem', orange: 'Aandacht nodig', green: 'Op koers' }[cls];
-            const reason = cls === 'red' && red >= 2 && avg >= 2 ? `rood: ${red} zware problemen`
+            const reason = cls === 'red' && kern && red < 2 && avg >= 2 ? 'rood: Inhoud is een zwaar probleem'
+                : cls === 'red' && red >= 2 && avg >= 2 ? `rood: ${red} zware problemen`
                 : cls === 'orange' && red && avg >= 2.7 ? 'niet groen: er is een zwaar probleem' : '';
             const parts = [];
             if (n < categories.length) parts.push(`${n} van ${categories.length} beoordeeld`);
@@ -2515,7 +2512,7 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
             }
             return null;
         }
-        const avgOf = p => { let tw = 0, ws = 0; categories.forEach(c => { if (p.scores[c.id] > 0) { ws += p.scores[c.id] * c.weight; tw += c.weight; } }); return tw ? ws / tw : 0; };
+        const avgOf = p => totalLevel(p.scores).avg;
         function renderTabs() {
             if (window.ocPk) ocPk.teken();
             const many = state.projects.length > 1, rb = document.getElementById('resetBtn');
@@ -2853,7 +2850,7 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
             side.innerHTML = `
                 <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#64748b">Totaalstatus</div>
                 <div style="font-size:30px;font-weight:700;letter-spacing:-0.02em;color:${totalColor};margin:4px 0 6px">${escHtml(total)}</div>
-                <div style="font-size:13px;color:#64748b">${avg ? 'gewogen gemiddelde ' + avg.toFixed(2).replace('.', ',') + ' op 3 · ' : ''}${scored} van ${categories.length} categorieën beoordeeld</div>
+                <div style="font-size:13px;color:#64748b">${avg ? 'gemiddelde ' + avg.toFixed(2).replace('.', ',') + ' op 3 · ' : ''}${scored} van ${categories.length} categorieën beoordeeld</div>
                 ${lv.reason ? `<div style="font-size:13px;color:${totalColor};margin-top:2px">${escHtml(lv.reason.charAt(0).toUpperCase() + lv.reason.slice(1))}.</div>` : ''}
                 <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
                     ${[[1, 'Zwaar probleem'], [2, 'Licht probleem'], [3, 'Op koers']].map(([v, l]) =>
