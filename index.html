@@ -1889,7 +1889,7 @@ window.ocProjectkiezer = function (plek, o) {
                 <ul>
                     <li><b>Beoordeel elke categorie.</b> Kies Zwaar, Licht of Op koers. Tik op de naam van een categorie om te lezen wat elke keuze betekent. Bij een probleem schrijf je kort wat er aan de hand is.</li>
                     <li><b>Lees de radar.</b> Hoe verder een punt naar buiten staat, hoe beter het loopt. Een deuk naar binnen toont meteen waar het knelt.</li>
-                    <li><b>Zo komt de totaalstatus tot stand.</b> Zwaar telt als 1, Licht als 2 en Op koers als 3. De tool neemt daarvan het gemiddelde. Rood wordt het als Inhoud zwaar is, bij twee of meer zware problemen, of bij een gemiddelde onder 2. Groen alleen bij een gemiddelde vanaf 2,7 zonder één zwaar probleem. Al de rest is oranje: aandacht nodig. Inhoud weegt het zwaarst omdat onduidelijke of wijzigende doelen en eisen in onderzoek de meest genoemde oorzaak van mislukte projecten zijn. Een zwaar probleem bij Afhankelijkheden telt voor het totaal als licht: dat wordt het minst genoemd. Wat je niet invult, telt niet mee, en een kleur komt er pas vanaf vijf beoordeelde categorieën.</li>
+                    <li><b>Zo komt de totaalstatus tot stand.</b> Zwaar telt als 1, Licht als 2 en Op koers als 3. De tool neemt daarvan het gemiddelde. Rood wordt het als Inhoud zwaar is, bij twee of meer zware problemen, of bij een gemiddelde onder 2. Groen alleen bij een gemiddelde vanaf 2,7 zonder één zwaar probleem. Al de rest is oranje: aandacht nodig. Inhoud weegt het zwaarst omdat onduidelijke of wijzigende doelen en eisen in onderzoek de meest genoemde oorzaak van mislukte projecten zijn. Wat je niet invult, telt niet mee, en een kleur komt er pas vanaf vijf beoordeelde categorieën.</li>
                     <li><b>Volg de problemen op.</b> Elk zwaar en licht probleem staat klaar als actie, met je toelichting erbij. Neem ze over in het Takenbord of in Prioriteren. In het Takenbord krijgt een zwaar probleem meteen prioriteit Hoog.</li>
                 </ul>
                 <p>Weet een andere tool al iets over hetzelfde project, dan staat dat in korte regels onder de categorie, hooguit twee: eerst wat aandacht vraagt. Neem alles over met <b>Zet in toelichting</b>. Is de regel hard, bijvoorbeeld twee mijlpalen te laat, dan staat er een knop <b>Voorstel: Licht</b> of <b>Voorstel: Zwaar</b>. Dat geldt pas als je erop tikt. "Op koers" stelt hij nooit voor: de score kies je altijd zelf. De radar leest de Projectopdracht, Tijdlijn, Project Realisme Monitor, Meetplan, Gap-analyse, Veranderprofiel, Risicomatrix, Takenbord, Beslissingslog, Retro, RACI-matrix, Veranderklimaat, Betrokkenenradar, Sponsorschap, Impactanalyse en het Communicatieplan.</p>
@@ -2395,16 +2395,16 @@ const ocExport = (() => {
 
         /* Totaalstatus: één regel voor label en kleur. Drie lagen in plaats van gewichten met decimalen.
            Waarom lagen: in de PMI Pulse of the Profession 2018 (4.455 projectmensen, hoofdoorzaken van mislukte projecten) gaan de vier
-           grootste oorzaken over doel en eisen (Inhoud), staat afhankelijkheid tussen taken helemaal achteraan, en ligt de rest dicht bij elkaar.
+           grootste oorzaken over doel en eisen (Inhoud); de rest ligt dicht bij elkaar. Daarom weegt alleen Inhoud zwaarder.
+           Een zwaar probleem telt overal als zwaar: wat de gebruiker zwaar noemt, zwakken we niet af.
            - Minder dan MIN_BEOORDEELD categorieën beoordeeld: nog geen kleur.
            - Rood: Inhoud is zwaar, of twee of meer zware problemen, of een gemiddelde onder 2.
-           - Een zwaar probleem bij Afhankelijkheden telt voor het totaal als licht.
            - Groen: gemiddelde vanaf 2,7 en geen enkel zwaar probleem. Al de rest: aandacht nodig.
            Het Projectdossier (dossier/index.html) rekent met dezelfde regel: pas beide samen aan. */
-        const MIN_BEOORDEELD = 5, KERN = 'scope', LICHTER = 'dependencies';
+        const MIN_BEOORDEELD = 5, KERN = 'scope';
         function totalLevel(sc) {
             let som = 0, n = 0, red = 0;
-            categories.forEach(c => { let v = sc[c.id]; if (v > 0) { if (v === 1 && c.id === LICHTER) v = 2; som += v; n++; if (v === 1) red++; } });
+            categories.forEach(c => { const v = sc[c.id]; if (v > 0) { som += v; n++; if (v === 1) red++; } });
             const avg = n ? som / n : 0;
             if (!n) return { avg, n, red, cls: 'empty', label: 'Nog niet', note: '', reason: '' };
             if (n < MIN_BEOORDEELD) return { avg, n, red, cls: 'empty', label: 'Nog te weinig beoordeeld', note: `${n} van ${categories.length} beoordeeld · een kleur vanaf ${MIN_BEOORDEELD}`, reason: '' };
