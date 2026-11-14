@@ -776,6 +776,8 @@ body { min-height:100dvh; }
 /* de knop als rustige groene tekstknop (zoals "Open bestand"), onder de tekst uitgelijnd */
 .sig-zet { flex:none; display:inline-flex; align-items:center; gap:0.375rem; min-height:44px; margin:-0.25rem 0 0 1rem; padding:0 0.5rem; font:inherit; font-size:0.8125rem; font-weight:600; color:#047857; background:none; border:0; border-radius:8px; cursor:pointer; white-space:nowrap; }
 .sig-zet:hover { background:#ecfdf5; }
+.sig-neem { flex:none; min-height:44px; margin:-0.25rem 0 0.25rem auto; padding:0 0.875rem; border-radius:10px; border:1.5px solid #a7f3d0; background:#ecfdf5; color:#047857; font:inherit; font-size:0.8125rem; font-weight:600; cursor:pointer; }
+.sig-neem:hover { background:#d1fae5; }
 .sig-zet svg { width:16px; height:16px; flex:none; }
 .sig-zet[aria-disabled="true"] { color:#475569; cursor:default; font-weight:500; }
 .sig-zet[aria-disabled="true"]:hover { background:none; }
@@ -1890,7 +1892,7 @@ window.ocProjectkiezer = function (plek, o) {
                     <li><b>Zo komt de totaalstatus tot stand.</b> Zwaar telt als 1, Licht als 2 en Op koers als 3. De tool neemt daarvan een gewogen gemiddelde: risico's wegen het zwaarst, daarna inhoud, planning en knelpunten, dan budget en afhankelijkheden. Rood wordt het bij twee of meer zware problemen, of bij een gemiddelde onder 2. Groen alleen bij een gemiddelde vanaf 2,7 zonder één zwaar probleem. Al de rest is oranje: aandacht nodig. Wat je niet invult, telt niet mee.</li>
                     <li><b>Volg de problemen op.</b> Elk zwaar en licht probleem staat klaar als actie, met je toelichting erbij. Neem ze over in het Takenbord of in Prioriteren. In het Takenbord krijgt een zwaar probleem meteen prioriteit Hoog.</li>
                 </ul>
-                <p>Weet een andere tool al iets over hetzelfde project, dan staat dat in korte regels onder de categorie, hooguit twee: eerst wat aandacht vraagt. Neem alles over met <b>Zet in toelichting</b>, de score kies je altijd zelf. De radar leest de Projectopdracht, Tijdlijn, Project Realisme Monitor, Meetplan, Gap-analyse, Veranderprofiel, Risicomatrix, Takenbord, Beslissingslog, Retro, RACI-matrix, Veranderklimaat, Betrokkenenradar, Sponsorschap, Impactanalyse en het Communicatieplan.</p>
+                <p>Weet een andere tool al iets over hetzelfde project, dan staat dat in korte regels onder de categorie, hooguit twee: eerst wat aandacht vraagt. Neem alles over met <b>Zet in toelichting</b>. Is de regel hard, bijvoorbeeld twee mijlpalen te laat, dan staat er een knop <b>Voorstel: Licht</b> of <b>Voorstel: Zwaar</b>. Dat geldt pas als je erop tikt. "Op koers" stelt hij nooit voor: de score kies je altijd zelf. De radar leest de Projectopdracht, Tijdlijn, Project Realisme Monitor, Meetplan, Gap-analyse, Veranderprofiel, Risicomatrix, Takenbord, Beslissingslog, Retro, RACI-matrix, Veranderklimaat, Betrokkenenradar, Sponsorschap, Impactanalyse en het Communicatieplan.</p>
                 <p>Tip: met Tab ga je van categorie naar categorie, met de pijltjes kies je de status. Escape sluit de uitleg bij een categorie.</p>
                 <p>Volg de problemen op in het <a href="../kanban/">Takenbord</a> of zet ze op volgorde in <a href="../prioriteit/">Prioriteren</a>. Wil je de risico's apart bekijken? Gebruik de <a href="../risico/">Risicomatrix</a>.</p>
             </div>
@@ -3048,7 +3050,7 @@ function ocPickProject(st, arr, cur = 'current') { const p = ocProject(''); if (
    Per categorie hooguit twee korte regels met wat de andere tools weten over HETZELFDE project, met een link naar die tool.
    Amber eerst, daarna wat het zwaarst weegt; wat niet past, staat in één rustige zin en komt mee met "Zet in toelichting".
    Alleen lezen: deze code schrijft nooit in de opslag van een andere tool. Voorbeelden (voorbeeld:true) tellen niet mee.
-   Kapotte of onverwachte gegevens: stil niets. De score blijft altijd de keuze van de gebruiker: hier wordt nooit een score gezet.
+   Kapotte of onverwachte gegevens: stil niets. De score blijft altijd de keuze van de gebruiker: de tool stelt er hooguit een voor (zie stel), jij neemt ze over.
    Welk project: de naam van deze radar, of anders het actieve project in de app (oc.project).
    De lezers en rekenregels komen uit het Projectdossier (dossier/app.js): zelfde namen, risico's, mijlpalen en akkoord. */
 const ocSignalen = (() => {
@@ -3388,6 +3390,11 @@ const ocSignalen = (() => {
     const s = pk(naam), uit = {}, nu = vandaag();
     if (!s) return uit;
     const zet = (cat, tool, tekst, l, w) => { (uit[cat] = uit[cat] || []).push({ tool, tekst, let:!!l, w:w || 9 }); };
+    /* Voorstel voor een score, alleen waar de regel hard is (2 = licht, 1 = zwaar; het zwaarste voorstel wint).
+       Nooit "Op koers": dat de tools niets fout vinden, bewijst niet dat het goed gaat. Budget, communicatie en afhankelijkheden krijgen nooit een voorstel.
+       De gebruiker bevestigt altijd zelf met "Neem over". */
+    voorstel = {};
+    const stel = (cat, score, reden) => { const v = voorstel[cat]; if (!v || score < v.score) voorstel[cat] = { score, reden }; };
     const o = vind('opdracht', s), kb = vind('kanban', s), tl = vind('tijdlijn', s);
     const isMijlpaal = (c, m) => sleutel(c.title) === sleutel('Mijlpaal: ' + m.text) || sleutel(c.title) === sleutel(m.text);
     // Projectopdracht met inhoud: dezelfde vakken als het Projectdossier (opInhoud)
@@ -3406,22 +3413,27 @@ const ocSignalen = (() => {
       else if (f.length && eind) f.push(`einddatum ${fmtLang(eind)}`);
       if (f.length) zet('planning', 'opdracht', f.join(', '), l, 1);
     }
+    let msLaat = opLaat.size;
     // Tijdlijn: voorbij de datum en niet gehaald (isLaat), en verschoven. Wat de Projectopdracht al telt, telt hier niet nog eens.
     if (tl) {
       const laat = tl.items.filter(it => tlLaat(it) && !opLaat.has(sleutel(it.text))).length, versch = tl.items.filter(it => tlVerschoven(it) && !tlLaat(it)).length, f = [];
       if (laat) f.push(`${meer(laat, 'mijlpaal ligt', 'mijlpalen liggen')} voorbij ${laat === 1 ? 'de' : 'hun'} datum`);
       if (versch) f.push(f.length ? `${versch} ${versch === 1 ? 'is' : 'zijn'} verschoven` : `${meer(versch, 'mijlpaal is', 'mijlpalen zijn')} verschoven`);
       if (f.length) zet('planning', 'tijdlijn', f.join(', '), laat > 0, laat ? 2 : 5);
+      msLaat += laat;
     }
+    if (msLaat) stel('planning', msLaat >= 2 ? 1 : 2, `${meer(msLaat, 'mijlpaal is', 'mijlpalen zijn')} te laat`);
     if (eind && vind('realisme', s) && vind('realisme', s).geldig) {
       const r = realismeEinde(s);
       if (r) { const w = Math.round((new Date(r + 'T00:00:00') - new Date(eind + 'T00:00:00')) / (7 * 864e5));
-        if (w > 0) zet('planning', 'realisme', `realistisch klaar op ${fmtLang(r)}, ${meer(w, 'week', 'weken')} na de einddatum in je Projectopdracht`, true, 3); }
+        if (w > 0) { zet('planning', 'realisme', `realistisch klaar op ${fmtLang(r)}, ${meer(w, 'week', 'weken')} na de einddatum in je Projectopdracht`, true, 3);
+          if (msLaat < 2) stel('planning', 1, `de Project Realisme Monitor komt ${meer(w, 'week', 'weken')} na je einddatum uit`); } }
     }
 
     // Inhoud: de opdracht veranderde na het akkoord.
     if (o) {
       const vv = opVelden(o);
+      if (opGewijzigd(o).length) stel('scope', 2, 'de opdracht is gewijzigd na het akkoord');
       if (opGewijzigd(o).length) zet('scope', 'opdracht', `gewijzigd na het akkoord${vv.length ? ` (${vv.slice(0, 3).map(k => lc(OP_VELD[k])).join(', ')}${vv.length > 3 ? ' en meer' : ''})` : ''}`, true, 1);
     }
     // Meetplan: de streefdatum is voorbij en de streefwaarde is niet gehaald (zelfde stand als het Meetplan), en indicatoren zonder streefwaarde.
@@ -3432,6 +3444,7 @@ const ocSignalen = (() => {
       if (laat) f.push(`bij ${meer(laat, 'indicator', 'indicatoren')} is de streefdatum voorbij en de streefwaarde niet gehaald`);
       if (zonder) f.push(`${meer(zonder, 'indicator heeft', 'indicatoren hebben')} nog geen streefwaarde`);
       if (f.length) zet('scope', 'meetplan', f.join(', '), laat > 0, laat ? 2 : 4);
+      if (laat && !voorstel.scope) stel('scope', 2, `bij ${meer(laat, 'indicator', 'indicatoren')} is de streefdatum voorbij`);
     }
     // Gap-analyse: een verschil om eerst aan te pakken (impact en haalbaarheid 3 of meer) zonder actie.
     const gp = vind('gap', s);
@@ -3452,6 +3465,10 @@ const ocSignalen = (() => {
       if (geenEig) f.push(f.length ? `${geenEig} zonder eigenaar` : `${meer(geenEig, 'groot risico', "grote risico's")} zonder eigenaar`);
       if (ri.teSchatten) f.push(f.length ? `${ri.teSchatten} nog in te schatten` : `${meer(ri.teSchatten, 'risico', "risico's")} nog in te schatten`);
       if (f.length) zet('risks', 'risico', f.join(', '), groot + geenEig > 0, 1);
+      const zonderEig = ri.items.filter(x => x.status !== 'klaar' && !x.eigenaar).length;
+      if (open.length >= 3) stel('risks', 1, `${open.length} grote risico's staan open`);
+      else if (open.length) stel('risks', 2, `${meer(open.length, 'groot risico staat', "grote risico's staan")} open`);
+      else if (zonderEig) stel('risks', 2, `${meer(zonderEig, 'risico heeft', "risico's hebben")} geen eigenaar`);
     }
 
     // Knelpunten: taken te laat (mijlpalen tellen al bij Planning), met hoeveel daarvan prioriteit Hoog hebben, en acties die te laat zijn.
@@ -3459,22 +3476,26 @@ const ocSignalen = (() => {
       const laat = kb.cards.filter(c => c.status !== 'klaar' && c.dueDate && c.dueDate < nu && !/^mijlpaal\s*:/i.test(c.title)
         && !(o && o.mijlpalen.some(m => m.text.trim() && isMijlpaal(c, m))));
       const n = laat.length, h = laat.filter(c => c.priority === 'high').length;
+      if (n) stel('issues', h ? 1 : 2, h ? `${meer(h, 'taak', 'taken')} met prioriteit Hoog ${h === 1 ? 'is' : 'zijn'} te laat` : `${meer(n, 'taak is', 'taken zijn')} te laat`);
       if (n) zet('issues', 'kanban', `${meer(n, 'taak is', 'taken zijn')} te laat${h ? `, ${n === 1 ? 'met' : h === n ? 'allemaal met' : h + ' met'} prioriteit Hoog` : ''}`, true, 1);
     }
     const be = vind('besluit', s);
     if (be) {
       const n = be.items.filter(x => x.status !== 'ingetrokken').reduce((t, x) => t + x.acties.filter(a => !a.done && a.when && a.when < nu).length, 0);
       if (n) zet('issues', 'besluit', `${meer(n, 'actie is', 'acties zijn')} te laat`, true, 2);
+      if (n && !voorstel.issues) stel('issues', 2, `${meer(n, 'actie is', 'acties zijn')} te laat`);
     }
     if (gp) {
       const n = gp.gaps.reduce((t, g) => t + g.acties.filter(a => !a.done && a.by && a.by < nu).length, 0);
       if (n) zet('issues', 'gap', `${meer(n, 'actie is', 'acties zijn')} te laat`, true, 3);
+      if (n && !voorstel.issues) stel('issues', 2, `${meer(n, 'actie is', 'acties zijn')} te laat`);
     }
     const rt = retroOpen(s, naam);
     if (rt && rt.length) {
       const laat = rt.filter(a => a.when && a.when < nu).length;
       const nog = laat === 0 ? '' : rt.length === 1 ? ' en is te laat' : laat === rt.length ? ', allemaal te laat' : `, ${laat} te laat`;
       zet('issues', 'retro', `${meer(rt.length, 'actie staat', 'acties staan')} nog open${nog}`, laat > 0, 4);
+      if (laat && !voorstel.issues) stel('issues', 2, `${meer(laat, 'actie is', 'acties zijn')} te laat`);
     }
 
     // Betrokkenen: wie de verandering draagt (Sponsorschap), veel invloed maar (nog) niet mee ("Vroeg opzoeken"), en zware impact zonder maatregel.
@@ -3487,6 +3508,7 @@ const ocSignalen = (() => {
       else if (skc && skc['sponsor.thema_zwak']) { const t = skc['sponsor.thema_zwak'].split(/\s*,\s*/).filter(Boolean).map(x => x.toLowerCase());
         if (t.length) f.push(`de steun is zwak bij ${opsom(t)}`); }
       if (f.length) zet('stakeholders', 'sponsor', f.join(', '), true, 1);
+      if (f.length) stel('stakeholders', 2, f[0]);
     }
     const br = vind('betrokken', s);
     if (br) {
@@ -3494,6 +3516,7 @@ const ocSignalen = (() => {
       if (vroeg) f.push(`${meer(vroeg, 'betrokkene', 'betrokkenen')} met veel invloed ${vroeg === 1 ? 'wil' : 'willen'} nog niet mee`);
       if (todo) f.push(`${meer(todo, 'betrokkene', 'betrokkenen')} nog in te schatten`);
       if (f.length) zet('stakeholders', 'betrokken', f.join(', '), vroeg > 0, 2);
+      if (vroeg && !voorstel.stakeholders) stel('stakeholders', 2, f[0]);
     }
     const im = vind('impact', s);
     if (im && im.heet.length) zet('stakeholders', 'impact', `grote impact op ${opsom(im.heet)}, nog geen maatregel`, false, 3);
@@ -3502,9 +3525,9 @@ const ocSignalen = (() => {
     const kc = kern('klimaat', s, 'klimaat.analyse');
     if (kc) {
       const t = kc['klimaat.type'], b = parseFloat(kc['klimaat.belasting_max']);
-      if (t === 'Verzadigd') zet('resources', 'klimaat', 'verzadigd, er is weinig ruimte en weinig vertrouwen', true, 1);
-      else if (t === 'Moe maar welwillend') zet('resources', 'klimaat', 'moe maar welwillend, de draagkracht is beperkt', true, 1);
-      else if (t === 'Verschilt per team' && b >= 0.5) zet('resources', 'klimaat', 'minstens één team draagt al veel verandering', true, 1);   // 0,5: vanaf daar is het klimaat moe of verzadigd
+      if (t === 'Verzadigd') { zet('resources', 'klimaat', 'verzadigd, er is weinig ruimte en weinig vertrouwen', true, 1); stel('resources', 1, 'het veranderklimaat is verzadigd'); }
+      else if (t === 'Moe maar welwillend') { zet('resources', 'klimaat', 'moe maar welwillend, de draagkracht is beperkt', true, 1); stel('resources', 2, 'het veranderklimaat is moe maar welwillend'); }
+      else if (t === 'Verschilt per team' && b >= 0.5) { zet('resources', 'klimaat', 'minstens één team draagt al veel verandering', true, 1); stel('resources', 2, 'minstens één team draagt al veel verandering'); }   // 0,5: vanaf daar is het klimaat moe of verzadigd
     }
     const ra = vind('raci', s);
     if (ra && ra.roles.length) {
@@ -3542,7 +3565,8 @@ const ocSignalen = (() => {
   // De tekst die in de toelichting komt: dezelfde regel, zonder links.
   const platte = stukken => stukken.map(x => `${TOOL[x.tool].naam}: ${x.tekst}.`).join(' ');
   const MAX_REGELS = 2;   // per categorie: zo blijft de lijst rustig
-  let laatste = {};
+  let laatste = {}, voorstel = {};
+  const SCORE = { 1:'Zwaar', 2:'Licht' };
 
   function toon() {
     const lijst = document.getElementById('slidersList'); if (!lijst) return;
@@ -3551,7 +3575,7 @@ const ocSignalen = (() => {
     let iets = false;
     categories.forEach(cat => {
       const el = document.getElementById('sig-' + cat.id); if (!el) return;
-      const st = regels[cat.id];
+      const st = regels[cat.id], vs = p && scores[cat.id] === 0 ? voorstel[cat.id] : null;
       if (!st || !st.length) { if (!el.hidden) { el.hidden = true; el.innerHTML = ''; delete el.dataset.h; } return; }
       iets = true;
       const tekst = platte(st), ta = document.getElementById('toelichting-' + cat.id), al = !!(ta && ta.value.includes(tekst));
@@ -3560,11 +3584,12 @@ const ocSignalen = (() => {
       const html = `<div class="sig-txt">${st.slice(0, MAX_REGELS).map(x => `<p class="sig-r">${x.let ? ICO.let : ICO.info}<span><a href="${TOOL[x.tool].pad}">${esc(TOOL[x.tool].naam)}</a>: ${esc(x.tekst)}.</span></p>`).join('')}`
         + (rest > 0 ? `<p class="sig-meer">En ${meer(rest, 'ander signaal', 'andere signalen')} uit ${opsom(st.slice(MAX_REGELS).map(x => `<a href="${TOOL[x.tool].pad}">${esc(TOOL[x.tool].naam)}</a>`))}. ${rest === 1 ? 'Dat komt' : 'Die komen'} mee in de toelichting.</p>` : '') + '</div>'
         + (al ? `<button type="button" class="sig-zet" data-sig="${cat.id}" aria-disabled="true">${ICO.ok}Staat in de toelichting</button>`
-              : `<button type="button" class="sig-zet" data-sig="${cat.id}" aria-label="Zet in toelichting bij ${esc(cat.label)}">${ICO.zet}Zet in toelichting</button>`);
+              : `<button type="button" class="sig-zet" data-sig="${cat.id}" aria-label="Zet in toelichting bij ${esc(cat.label)}">${ICO.zet}Zet in toelichting</button>`)
+        + (vs ? `<button type="button" class="sig-neem" data-neem="${cat.id}" data-score="${vs.score}" aria-label="Voorstel bij ${esc(cat.label)}: ${SCORE[vs.score]}, want ${esc(vs.reden)}. Tik om over te nemen.">Voorstel: ${SCORE[vs.score]}</button>` : '');
       if (el.dataset.h === html && !el.hidden) return;   // niets veranderd: niet opnieuw tekenen (de focus blijft staan)
       const focus = el.contains(document.activeElement);
       el.innerHTML = html; el.dataset.h = html; el.hidden = false;
-      if (focus) { const b = el.querySelector('.sig-zet'); b && b.focus({ preventScroll:true }); }
+      if (focus && !el.contains(document.activeElement)) { const b = el.querySelector('.sig-zet'); b && b.focus({ preventScroll:true }); }
     });
     const bron = document.getElementById('sigBron');
     if (bron) {
@@ -3574,7 +3599,7 @@ const ocSignalen = (() => {
     }
   }
 
-  // "Zet in toelichting": de regel komt onderaan de toelichting van die categorie, met Ongedaan. Nooit een score.
+  // "Zet in toelichting": de regel komt onderaan de toelichting van die categorie, met Ongedaan. Geen score.
   function zetIn(id) {
     const st = laatste[id], ta = document.getElementById('toelichting-' + id), wrap = document.getElementById('toelichting-wrap-' + id);
     if (!st || !st.length || !ta) return;
@@ -3591,6 +3616,13 @@ const ocSignalen = (() => {
       saveState(); refreshBars();
     });
   }
+  // "Neem over": kiest de voorgestelde score zoals een tik op de knop zelf, en zet de signalen in de toelichting. Jij bevestigt, de tool kiest niet.
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.sig-neem[data-neem]'); if (!b) return;
+    const id = b.dataset.neem, r = document.getElementById(`score-${id}-${b.dataset.score}`); if (!r) return;
+    r.checked = true; r.dispatchEvent(new Event('change', { bubbles:true }));
+    zetIn(id); toon();
+  });
   document.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.sig-zet[data-sig]'); if (!b) return;
     if (b.getAttribute('aria-disabled') === 'true') return;
